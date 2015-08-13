@@ -45,6 +45,7 @@ class Users extends Controller{
         parent::__construct();
 
         $this->load->model('Users_Model');
+        $this->load->helper('url');
 
         // init app with app id and secret
 
@@ -235,7 +236,7 @@ class Users extends Controller{
 
                         $connection = new TwitterOAuth('rroVKOhzUkPxAN3pweL8jCsEN', 'u80Q7SN5d9Br0QW35o5W026iCiDOGHrQigbp8uhvVCCBbYzHrz');
 
-                        $request_token = $connection->getRequestToken('http://w.gregfurlong.ie/login/twitter/');
+                        $request_token = $connection->getRequestToken(base_url('login/twitter'));
 
                         $_SESSION['oauth_token'] = $token = $request_token['oauth_token'];
 
@@ -280,7 +281,7 @@ class Users extends Controller{
 
                             // Something's wrong, go back to square 1
 
-                            header('Location: http://w.gregfurlong.ie/login/twitter/');
+                            header(sprintf('Location: %s', base_url('login/twitter')));
 
                         } else {
 

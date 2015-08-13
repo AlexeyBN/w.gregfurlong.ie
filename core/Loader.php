@@ -37,4 +37,16 @@ class Loader {
         }
         require(ABSPATH."libraries/".$library.'.php');
     }
+
+    /**
+     * Include helper file
+     * @param $name
+     */
+    public function helper($name)
+    {
+        $helper_file = ABSPATH . "helpers/{$name}_helper.php";
+        if (file_exists($helper_file)) {
+            require_once $helper_file;
+        }
+    }
 }
