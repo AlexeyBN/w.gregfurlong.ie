@@ -96,7 +96,7 @@ class Users extends Controller{
 
                 case "facebook":
 
-                    $helper = new FacebookRedirectLoginHelper('http://w.gregfurlong.ie/login/facebook/' );
+                    $helper = new FacebookRedirectLoginHelper(base_url('login/facebook'));
 
                     $session = $helper->getSessionFromRedirect();
 
@@ -231,16 +231,17 @@ class Users extends Controller{
                     break;
 
                 case "twitter":
-
-                    if( !isset( $_SESSION['oauth_token'] ) ) {
-
-                        $connection = new TwitterOAuth('rroVKOhzUkPxAN3pweL8jCsEN', 'u80Q7SN5d9Br0QW35o5W026iCiDOGHrQigbp8uhvVCCBbYzHrz');
+                    $tokens = $this->session->userdata('tokens');
+                    $twitter_config = get_config('twitter');
+                    if ($tokens === null) {
+                        $connection = new TwitterOAuth($twitter_config['key'], $twitter_config['secret']);
 
                         $request_token = $connection->getRequestToken(base_url('login/twitter'));
 
-                        $_SESSION['oauth_token'] = $token = $request_token['oauth_token'];
-
-                        $_SESSION['oauth_token_secret'] = $request_token['oauth_token_secret'];
+                        $this->session->set_userdata('tokens', array(
+                            'oauth_token'        => $request_token['oauth_token'],
+                            'oauth_token_secret' => $request_token['oauth_token_secret'],
+                        ));
 
                         switch ($connection->http_code) {
 
@@ -257,31 +258,29 @@ class Users extends Controller{
                                 $error = 'Could not connect to Twitter. Refresh the page or try again later.';
 
                         }
+                    } else {
 
-                    }else{
+                        $connection = new TwitterOAuth($twitter_config['key'], $twitter_config['secret'],$tokens['oauth_token'], $tokens['oauth_token_secret']);
 
-                        $connection = new TwitterOAuth('rroVKOhzUkPxAN3pweL8jCsEN', 'u80Q7SN5d9Br0QW35o5W026iCiDOGHrQigbp8uhvVCCBbYzHrz',$_SESSION['oauth_token'], $_SESSION['oauth_token_secret']);
-
-                        $access_token = $connection->getAccessToken($_REQUEST['oauth_verifier']);
-
-                        // Save it in a session var
-
-                        $_SESSION['access_token'] = $access_token;
+                        $oauth_verifier = $connection->getAccessToken($_REQUEST['oauth_verifier']);
 
                         // Let's get the user's info
 
                         $user_info = $connection->get('account/verify_credentials');
+                        /*$tweets = $connection->get('statuses/user_timeline', array(
+                            'user_id' => $oauth_verifier['user_id'],
+                            'screen_name' => $oauth_verifier['screen_name'],
+                        ));*/
 
-
-                        $followers = sizeof($connection->get('followers/ids' , array('screen_name' => $user_info->screen_name)));
+                        $followers = $user_info->followers_count;
 
                         // Print user's info
 
-                        if(isset($user_info->error)){
+                        if(isset($user_info->error) || isset($user_info->errors)){
 
                             // Something's wrong, go back to square 1
 
-                            header(sprintf('Location: %s', base_url('login/twitter')));
+                            header(sprintf('Location: %s', base_url('login')));
 
                         } else {
 
@@ -326,13 +325,11 @@ class Users extends Controller{
                             $UserMeta->save();
 
 
-
                             /**
 
                              * Update social meta value
 
                              */
-
 
 
                             $UserMeta = Usermetum::find_by_user_id_and_meta_key_and_meta_value( $user->user_id,'social_id',$user_info->id );
@@ -351,11 +348,37 @@ class Users extends Controller{
 
                             $UserMeta->save();
 
+
+                            /**
+                             * Save twitter user meta
+                             */
+
+                            $UserMeta = Usermetum::find('first', array(
+                                'user_id'   => $user->user_id,
+                                'meta_key'  => 'twitter_meta',
+                            ));
+
+                            if( sizeof($UserMeta)<=0){
+
+                                $UserMeta = new Usermetum();
+
+                            }
+
+                            $UserMeta->user_id = $user->user_id;
+
+                            $UserMeta->meta_key = 'twitter_meta';
+
+                            $UserMeta->meta_value = serialize($user_info);
+
+                            $UserMeta->save();
+
+
+
                             /**
 
-                            * Update graph table content
+                             * Update graph table content
 
-                            */
+                             */
 
                             $graph = Graph::find_by_user_id_and_date($user->user_id , date("Y-m-d"));
 
@@ -398,11 +421,15 @@ class Users extends Controller{
 
                                 'last_name' => $user_info->screen_name,
 
+                                'social_type' => 'twitter',
+
+                                'oauth_verifier' => $oauth_verifier,
+
                             );
 
                             $this->session->set_userdata('login', $userdata);
 
-                            redirect( BASE_URL."Dashboard" );
+                            redirect( base_url('Twitter') );
 
                         }
 
@@ -536,8 +563,7 @@ class Users extends Controller{
     function logout(){
 
         $this->session->unset_userdata( 'login' );
-
-        $_SESSION['oauth_token'] = NULL;
+        $this->session->unset_userdata( 'tokens' );
 
         redirect( BASE_URL );
 
@@ -650,15 +676,15 @@ Your friends</p>";
 
             //if ($_SESSION['captcha'] == $this->input->post('captcha')) {
 
-                $user = Users_Model::find_by_user_id($user_id);
+            $user = Users_Model::find_by_user_id($user_id);
 
-                $user->pass = md5($_POST['pass']);
+            $user->pass = md5($_POST['pass']);
 
-                $user->user_key = '';
+            $user->user_key = '';
 
-                $user->save();
+            $user->save();
 
-                $dis['message'] = '<p class="success">Change password success!</p>';
+            $dis['message'] = '<p class="success">Change password success!</p>';
 
             /*} else {
 

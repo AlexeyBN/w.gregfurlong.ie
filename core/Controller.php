@@ -14,6 +14,12 @@ class Controller {
     public $admin_menus = null;
     public $page_title = 'Codeigniter CMS';
     public $site_title = 'Codeigniter CMS';
+    public $_js_variables = array();
+    /**
+     * array ('type' => admin | front, 'file' => 'script.js')
+     * @var array
+     */
+    public $_js = array();
 
     public function __construct()
     {
@@ -21,6 +27,7 @@ class Controller {
         $this->load = new Loader();
         $this->load->library('Session');
         $this->session = new Session();
+        $this->load->helper('config');
     }
 
     public static function &get_instance()
@@ -34,6 +41,8 @@ class Controller {
         $dis['site_title'] = $this->site_title;
         $admin_login = $this->session->userdata('login');
         $dis['userlogin'] = Users_Model::find_by_user_id( $admin_login['user_id'] );
+        $dis['js_variables'] = $this->_js_variables;
+        $dis['js_scripts'] = $this->_js;
 
         if (!isset($dis['menu_active']) || empty($dis['menu_active'])) {
             $dis['menu_active'] = $this->menu_active;
@@ -51,6 +60,8 @@ class Controller {
         $dis['this'] = $this;
         $dis['page_title'] = $this->page_title;
         $dis['site_title'] = $this->site_title;
+        $dis['js_variables'] = $this->_js_variables;
+        $dis['js_scripts'] = $this->_js;
         $admin_login = $this->session->userdata('login');
         $this->load->model('Users_Model');
         if( empty( $admin_login ) ) redirect( BASE_URL."Users/login");
@@ -67,5 +78,13 @@ class Controller {
         }else{
             $this->load->view($dis['view'], $dis );
         }
+    }
+    /**
+     * Return is ajax request
+     * @return bool
+     */
+    public function is_ajax()
+    {
+        return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']=="XMLHttpRequest");
     }
 }

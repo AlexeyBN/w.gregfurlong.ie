@@ -46,6 +46,26 @@
 
     <![endif]-->
 
+    <?php if(!empty($js_variables)): ?>
+        <script type="text/javascript">
+            <?php foreach($js_variables as $var_key => $var_value): ?>
+                <?php if(is_numeric($var_value)): ?>
+                    window.<?= $var_key ?> = <?= $var_value ?>;
+                <?php elseif(is_string($var_value)): ?>
+                    window.<?= $var_key ?> = '<?= $var_value ?>';
+                <?php elseif(is_array($var_value) || is_object($var_value)): ?>
+                    window.<?= $var_key ?> = JSON.parse('<?= json_encode($var_value) ?>');
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </script>
+    <?php endif; ?>
+
+    <?php foreach($js_scripts as $script): ?>
+        <?php if($script['location'] == 'header'): ?>
+            <script src="<?php echo $base_url; ?>assets/<?php echo $script['type'] . '/js/' . $script['file'] ?>"></script>
+        <?php endif; ?>
+    <?php endforeach; ?>
+
     <script type="text/javascript">
 
         jQuery(document).ready(function($) {
