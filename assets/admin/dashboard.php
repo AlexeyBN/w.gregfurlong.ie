@@ -24,7 +24,7 @@
     <![endif]-->
     <script type="text/javascript">
         jQuery(document).ready(function($) {
-            jQuery('.progress .progress-bar').progressbar();
+            //jQuery('.progress .progress-bar').progressbar();
         });
     </script>
 </head>

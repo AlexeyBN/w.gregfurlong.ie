@@ -52,4 +52,22 @@ class Users_Model extends ActiveRecord\Model{
         }
         return false;
     }
+
+    function get_all_tweets()
+    {
+        if (!isset($_SESSION['login']['oauth_verifier'])) return false;
+        $verifier = $_SESSION['login']['oauth_verifier'];
+
+        if (self::is_twitter_account()) {
+            $twitter_config = get_config('twitter');
+            require_once (ABSPATH . "/includes/plugins/twitter/twitteroauth.php");
+            $connection = new TwitterOAuth($twitter_config['key'], $twitter_config['secret'], $verifier['oauth_token'], $verifier['oauth_token_secret']);
+            $tweets = $connection->get('statuses/user_timeline', array(
+                'user_id'       => $verifier['user_id'],
+                'screen_name'   => $verifier['screen_name'],
+            ));
+            return $tweets;
+        }
+        return false;
+    }
 }

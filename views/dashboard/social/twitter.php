@@ -63,59 +63,32 @@
         </div>
         <?php else: ?>
             <div class="col-xs-12 col-sm-8 col-md-8 daily-progress">
+                <div class="col-xs-12 col-sm-8 col-md-8 daily-progress">
 
-                <h3 class="title">Daily Progress</h3>
-                <p class="description">Daily progress change to My Warble Snapshot</p>
+                    <h3 class="title">Twitter account information</h3>
+                    <p class="description"></p>
 
-                <div class="pull-right timeline">
+                    <div class="pull-right timeline">
 
-                    <div class="period_time pull-right">
+                        <div class="period_time pull-right">
 
-                        <span style="font-weight:bold">THIS WEEK</span>
+                            <input type="text" class="form-control twitter_datepicker" value="<?php echo sprintf('%s - %s', $startDate, $endDate) ?>">
 
-                        <i class="fa fa-angle-down" style="font-weight:bold;margin-left:10px;"></i>
+                        </div>
 
                     </div>
+
+                    <div class="twitter-chart-info">
+                        <?php echo $this->view('dashboard/social/_twitter_chart', array(
+                            'favorites_chart'   => $favorites_chart,
+                            'chart_categories'  => $chart_categories,
+                            'startDate'         => $startDate,
+                            'endDate'           => $endDate,
+                        ), TRUE) ?>
+                    </div>
+                    <div id="twitter_chart" data-columns='[<?php echo json_encode($favorites_chart) ?>, <?php echo json_encode($retweets_chart) ?> ]' data-categories='<?php echo json_encode($chart_categories) ?>'></div>
 
                 </div>
-
-                <p>
-                </p><div class="row">
-                    <div class="col-xs-3 col-sm-3 col-md-3" style="width:20%">
-                        <div class="circle web-click"></div>
-                        <div class="information">
-                            <div class="count">1,490</div>
-                            <div class="caption">Web Clicks</div>
-                        </div>
-                    </div>
-
-                    <div class="col-xs-3 col-sm-3 col-md-3">
-                        <div class="circle coupon"></div>
-                        <div class="information">
-                            <div class="count">1,250</div>
-                            <div class="caption">Coupon Downloads</div>
-                        </div>
-                    </div>
-
-                    <div class="col-xs-3 col-sm-3 col-md-3" style="width:27%">
-                        <div class="circle social-mentions"></div>
-                        <div class="information">
-                            <div class="count">770</div>
-                            <div class="caption">Social Media Mentions</div>
-                        </div>
-                    </div>
-
-                    <div class="col-xs-3 col-sm-3 col-md-3" style="width:21%">
-                        <div class="circle new-followers"></div>
-                        <div class="information">
-                            <div class="count">250</div>
-                            <div class="caption">New Followers</div>
-                        </div>
-                    </div>
-                </div>
-                <p></p>
-
-                <div id="twitter_chart"></div>
 
             </div>
 
@@ -123,19 +96,5 @@
 
     </div>
 </div>
-
-<script type="text/javascript">
-    twitter_chart({
-        columns: [favorites_chart],
-        colors: {
-            Favorites: '#59c2e6',
-        },
-        axis: {
-            x: {
-                categories: chart_categories
-            }
-        }
-    });
-</script>
 
 <!--End Dashboard -->

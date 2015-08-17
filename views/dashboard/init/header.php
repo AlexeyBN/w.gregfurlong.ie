@@ -20,6 +20,10 @@
 
     <link href='http://fonts.googleapis.com/css?family=Righteous' rel='stylesheet' type='text/css'>
 
+    <?php foreach($csses as $css): ?>
+        <link href="<?php echo $base_url; ?>assets/<?php echo $css['type'] . '/css/' . $css['file'] ?>" rel="stylesheet">
+    <?php endforeach; ?>
+
 
 
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
@@ -70,7 +74,7 @@
 
         jQuery(document).ready(function($) {
 
-            jQuery('.progress .progress-bar').progressbar();
+            //jQuery('.progress .progress-bar').progressbar();
 
         });
 

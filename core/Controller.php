@@ -16,10 +16,15 @@ class Controller {
     public $site_title = 'Codeigniter CMS';
     public $_js_variables = array();
     /**
-     * array ('type' => admin | front, 'file' => 'script.js')
+     * array ('type' => admin | front, 'file' => 'script.js', 'location' => header | footer)
      * @var array
      */
     public $_js = array();
+    /**
+     * array ('type' => admin | front, 'file' => 'style.css')
+     * @var array
+     */
+    public $_css = array();
 
     public function __construct()
     {
@@ -43,6 +48,7 @@ class Controller {
         $dis['userlogin'] = Users_Model::find_by_user_id( $admin_login['user_id'] );
         $dis['js_variables'] = $this->_js_variables;
         $dis['js_scripts'] = $this->_js;
+        $dis['csses'] = $this->_css;
 
         if (!isset($dis['menu_active']) || empty($dis['menu_active'])) {
             $dis['menu_active'] = $this->menu_active;
@@ -62,6 +68,7 @@ class Controller {
         $dis['site_title'] = $this->site_title;
         $dis['js_variables'] = $this->_js_variables;
         $dis['js_scripts'] = $this->_js;
+        $dis['csses'] = $this->_css;
         $admin_login = $this->session->userdata('login');
         $this->load->model('Users_Model');
         if( empty( $admin_login ) ) redirect( BASE_URL."Users/login");

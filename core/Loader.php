@@ -20,7 +20,7 @@ class Loader {
 
         require_once(ABSPATH."models/".$model.'.php');
     }
-    public function view($view='', $dis = array() ){
+    public function view($view='', $dis = array(), $return = false ){
         if ( ! file_exists(ABSPATH."views/".$view.'.php'))
         {
             return;
@@ -28,7 +28,15 @@ class Loader {
         unset( $dis['view']);
         $this->var = array_merge( $this->var, $dis );
         extract( $this->var );
-        include(ABSPATH."views/".$view.'.php');
+        if (!$return) {
+            include(ABSPATH."views/".$view.'.php');
+        } else {
+            ob_start();
+            include(ABSPATH."views/".$view.'.php');
+            $html = ob_get_contents();
+            ob_end_clean();
+            return $html;
+        }
     }
     public function library($library){
         if ( ! file_exists(ABSPATH."libraries/".$library.'.php'))
