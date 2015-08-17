@@ -57,4 +57,9 @@ class Loader {
             require_once $helper_file;
         }
     }
+
+    public function get_uri()
+    {
+        return explode('/', preg_replace('/^\/|\/$/', '', trim($_SERVER['REQUEST_URI'])));
+    }
 }

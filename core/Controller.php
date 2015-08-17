@@ -33,6 +33,14 @@ class Controller {
         $this->load->library('Session');
         $this->session = new Session();
         $this->load->helper('config');
+        $this->load->helper('url');
+
+        if (!Users_Model::is_loged_in()) {
+            $uri = $this->load->get_uri();
+            if ($uri[0] != 'login' && $uri[0] != 'logout' && current_url() != base_url()) {
+                //redirect(base_url('/'));
+            }
+        }
     }
 
     public static function &get_instance()

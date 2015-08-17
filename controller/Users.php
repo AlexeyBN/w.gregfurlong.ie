@@ -45,7 +45,6 @@ class Users extends Controller{
         parent::__construct();
 
         $this->load->model('Users_Model');
-        $this->load->helper('url');
 
         // init app with app id and secret
 
@@ -231,213 +230,17 @@ class Users extends Controller{
                     break;
 
                 case "twitter":
-                    $tokens = $this->session->userdata('tokens');
-                    $twitter_config = get_config('twitter');
-                    if ($tokens === null) {
-                        $connection = new TwitterOAuth($twitter_config['key'], $twitter_config['secret']);
-
-                        $request_token = $connection->getRequestToken(base_url('login/twitter'));
-
-                        $this->session->set_userdata('tokens', array(
-                            'oauth_token'        => $request_token['oauth_token'],
-                            'oauth_token_secret' => $request_token['oauth_token_secret'],
-                        ));
-
-                        switch ($connection->http_code) {
-
-                            case 200:
-
-                                $url = $connection->getAuthorizeURL($request_token['oauth_token']);
-
-                                header('Location: ' . $url);
-
-                                break;
-
-                            default:
-
-                                $error = 'Could not connect to Twitter. Refresh the page or try again later.';
-
-                        }
-                    } else {
-
-                        $connection = new TwitterOAuth($twitter_config['key'], $twitter_config['secret'],$tokens['oauth_token'], $tokens['oauth_token_secret']);
-
-                        $oauth_verifier = $connection->getAccessToken($_REQUEST['oauth_verifier']);
-
-                        // Let's get the user's info
-
-                        $user_info = $connection->get('account/verify_credentials');
-                        /*$tweets = $connection->get('statuses/user_timeline', array(
-                            'user_id' => $oauth_verifier['user_id'],
-                            'screen_name' => $oauth_verifier['screen_name'],
-                        ));*/
-
-                        $followers = $user_info->followers_count;
-
-                        // Print user's info
-
-                        if(isset($user_info->error) || isset($user_info->errors)){
-
-                            // Something's wrong, go back to square 1
-
-                            header(sprintf('Location: %s', base_url('login')));
-
-                        } else {
-
-                            $user = Users_Model::find_by_email($user_info->id);
-
-                            if(sizeof($user)<=0){
-
-                                $user = new Users_Model();
-
-                            }
-
-                            $user->first_name = $user_info->screen_name;
-
-                            $user->last_name = $user_info->screen_name;
-
-                            $user->email = $user_info->id;
-
-                            $user->registration_date = date("Y-m-d H:i:s");
-
-                            $user->save();
-
-                            /**
-
-                             * Update social meta key
-
-                             */
-
-                            $UserMeta = Usermetum::find_by_user_id_and_meta_key_and_meta_value( $user->user_id,'social_type','twitter');
-
-                            if( sizeof($UserMeta)<=0){
-
-                                $UserMeta = new Usermetum();
-
-                            }
-
-                            $UserMeta->user_id = $user->user_id;
-
-                            $UserMeta->meta_key = 'social_type';
-
-                            $UserMeta->meta_value = 'twitter';
-
-                            $UserMeta->save();
-
-
-                            /**
-
-                             * Update social meta value
-
-                             */
-
-
-                            $UserMeta = Usermetum::find_by_user_id_and_meta_key_and_meta_value( $user->user_id,'social_id',$user_info->id );
-
-                            if( sizeof($UserMeta)<=0){
-
-                                $UserMeta = new Usermetum();
-
-                            }
-
-                            $UserMeta->user_id = $user->user_id;
-
-                            $UserMeta->meta_key = 'social_id';
-
-                            $UserMeta->meta_value = $user_info->id;
-
-                            $UserMeta->save();
-
-
-                            /**
-                             * Save twitter user meta
-                             */
-
-                            $UserMeta = Usermetum::find('first', array(
-                                'user_id'   => $user->user_id,
-                                'meta_key'  => 'twitter_meta',
-                            ));
-
-                            if( sizeof($UserMeta)<=0){
-
-                                $UserMeta = new Usermetum();
-
-                            }
-
-                            $UserMeta->user_id = $user->user_id;
-
-                            $UserMeta->meta_key = 'twitter_meta';
-
-                            $UserMeta->meta_value = serialize($user_info);
-
-                            $UserMeta->save();
-
-
-
-                            /**
-
-                             * Update graph table content
-
-                             */
-
-                            $graph = Graph::find_by_user_id_and_date($user->user_id , date("Y-m-d"));
-
-                            if( sizeof($graph) <= 0) {
-
-                                $graph = new Graph();
-
-                                $graph->user_id = $user->user_id;
-
-                                $graph->followers = $followers;
-
-                                $graph->social = 10;
-
-                                $graph->webclicks = 10;
-
-                                $graph->coupon = 10;
-
-                                $graph->date = date("Y-m-d");
-
-                                $graph->save();
-                            } else {
-
-                                $graph->followers = $followers;
-
-                                $graph->save();
-
-                            }
-
-                            // see if we have a session
-
-                            $userdata = array(
-
-                                'user_id' => $user->user_id,
-
-                                'email' => $user_info->id,
-
-                                'user_level' => 1,
-
-                                'first_name' => $user_info->screen_name,
-
-                                'last_name' => $user_info->screen_name,
-
-                                'social_type' => 'twitter',
-
-                                'oauth_verifier' => $oauth_verifier,
-
-                            );
-
-                            $this->session->set_userdata('login', $userdata);
-
-                            redirect( base_url('Twitter') );
-
-                        }
-
+                    $response = Users_Model::create_twitter_account(base_url('login/twitter'));
+                    switch ($response['status']) {
+                        case "redirect":
+                        case "redirect_error":
+                        case "success":
+                            redirect($response['url']);
+                            break;
+                        case "error":
+                            $dis['message'] = '<p class="error">'.$response['message'].'</p>';
+                            break;
                     }
-
-
-                    $dis['message'] = '<p class="error">'.$error.'</p>';
-
                     break;
             }
 
@@ -445,38 +248,11 @@ class Users extends Controller{
 
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-            $users = Users_Model::find_by_email_and_pass_and_active($_POST['email'], MD5($_POST['password']), NULL);
-
-            if( sizeof( $users ) > 0 ){
-
-                $userdata = array(
-
-                    'user_id' => $users->user_id,
-
-                    'email' => $users->email,
-
-                    'user_level' => $users->user_level,
-
-                    'first_name' => $users->first_name,
-
-                    'last_name' => $users->last_name,
-
-                    'account_type' => $users->type
-
-                );
-
-                $this->session->set_userdata('login', $userdata);
-
-                redirect( BASE_URL."Dashboard");
-
-            }else{
-
+            if (Users_Model::login()) {
+                redirect(base_url('Dashboard'));
+            } else {
                 $dis['message'] = '<p class="error">The email or password do not match those on file. Or you have not activated your account.</p>';
-
             }
-
-
-
         }
 
         $dis['view'] = 'users/login';

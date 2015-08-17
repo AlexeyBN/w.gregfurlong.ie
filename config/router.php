@@ -12,5 +12,5 @@ $route['settings']					= 'Users/settings';
 $route['Dashboard']                 = 'Dashboard/index';
 $route['Admin']						= 'Admin/index';
 $route['Facebook']                  = 'Dashboard/facebook';
-$route['Twitter']                   = 'Dashboard/twitter';
+$route['Twitter']                   = 'Twitter/index';
 $route['payment']                   = 'Users/payment';
