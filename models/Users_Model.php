@@ -59,20 +59,10 @@ class Users_Model extends ActiveRecord\Model{
     {
         $current_user = self::get_current_user();
         if ($current_user && ($current_user->type == self::USER_TYPE_HAS_TWITTER || $current_user->type == self::USER_TYPE_TWITTER)) {
-            switch ($current_user->type) {
-                case self::USER_TYPE_HAS_TWITTER:
-                    $verifier = array(
-                        'oauth_token' => $current_user->twitter_oauth_token,
-                        'oauth_token_secret' => $current_user->twitter_oauth_token_secret,
-                    );
-                    break;
-                case self::USER_TYPE_TWITTER:
-                    $verifier = $_SESSION['login']['oauth_verifier'];
-                    break;
-                default:
-                    return false;
-                    break;
-            }
+            $verifier = array(
+                'oauth_token' => $current_user->twitter_oauth_token,
+                'oauth_token_secret' => $current_user->twitter_oauth_token_secret,
+            );
 
             $twitter_config = get_config('twitter');
             require_once (ABSPATH . "/includes/plugins/twitter/twitteroauth.php");
@@ -90,20 +80,10 @@ class Users_Model extends ActiveRecord\Model{
     {
         $current_user = self::get_current_user();
         if ($current_user && ($current_user->type == self::USER_TYPE_HAS_TWITTER || $current_user->type == self::USER_TYPE_TWITTER)) {
-            switch ($current_user->type) {
-                case self::USER_TYPE_HAS_TWITTER:
-                    $verifier = array(
-                        'oauth_token' => $current_user->twitter_oauth_token,
-                        'oauth_token_secret' => $current_user->twitter_oauth_token_secret,
-                    );
-                    break;
-                case self::USER_TYPE_TWITTER:
-                    $verifier = $_SESSION['login']['oauth_verifier'];
-                    break;
-                default:
-                    return false;
-                    break;
-            }
+            $verifier = array(
+                'oauth_token' => $current_user->twitter_oauth_token,
+                'oauth_token_secret' => $current_user->twitter_oauth_token_secret,
+            );
             $twitter_config = get_config('twitter');
             require_once (ABSPATH . "/includes/plugins/twitter/twitteroauth.php");
             $connection = new TwitterOAuth($twitter_config['key'], $twitter_config['secret'], $verifier['oauth_token'], $verifier['oauth_token_secret']);
@@ -300,7 +280,11 @@ class Users_Model extends ActiveRecord\Model{
                 $user->last_name = $user_info->screen_name;
 
                 $user->email = $user_info->id;
+
                 $user->type  = self::USER_TYPE_TWITTER;
+
+                $user->twitter_oauth_token        = $oauth_verifier['oauth_token'];
+                $user->twitter_oauth_token_secret = $oauth_verifier['oauth_token_secret'];
 
                 $user->registration_date = date("Y-m-d H:i:s");
 
