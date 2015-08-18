@@ -1,6 +1,6 @@
 <div id="ajax-content">
 
-    <?php if(!$twitter_meta): ?>
+    <?php if(!Users_Model::is_twitter_account() && !Users_Model::has_twitter_account()): ?>
     <div class="tw-add-account">
         <div id="dashboard-header" class="row dashboard-head">
 

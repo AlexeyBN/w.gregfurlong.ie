@@ -34,11 +34,16 @@ class Controller {
         $this->session = new Session();
         $this->load->helper('config');
         $this->load->helper('url');
+        $this->load->model('Users_Model');
+
+        if ($login_info = $_SESSION['login']) {
+            Users_Model::set_current_user(Users_Model::first(array('user_id' => $login_info['user_id'])));
+        }
 
         if (!Users_Model::is_loged_in()) {
             $uri = $this->load->get_uri();
             if ($uri[0] != 'login' && $uri[0] != 'logout' && current_url() != base_url()) {
-                //redirect(base_url('/'));
+                redirect(base_url('/'));
             }
         }
     }

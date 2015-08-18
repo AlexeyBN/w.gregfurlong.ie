@@ -44,8 +44,6 @@ class Users extends Controller{
 
         parent::__construct();
 
-        $this->load->model('Users_Model');
-
         // init app with app id and secret
 
         FacebookSession::setDefaultApplication( '638909079579449','d4066e645f9db3d0fa962f0c6e0096c7' );

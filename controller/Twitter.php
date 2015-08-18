@@ -52,7 +52,11 @@ class Twitter extends Controller{
 
     public function index(){
         $current_user       = Users_Model::get_current_user();
-        $twitter_meta       = $current_user->get_usermeta('twitter_meta');
+
+        if ($current_user && $current_user->twitter_oauth_token != NULL && $current_user->twitter_oauth_token_secret != NULL) {
+            $current_user->update_token(base_url('Twitter/index'));
+        }
+
         $favorites          = $current_user->get_twitter_favorites();
         $tweets             = $current_user->get_all_tweets();
         $favorites_chart    = array('Favorites');
@@ -112,7 +116,6 @@ class Twitter extends Controller{
         } else {
             $this->layout('admin', 'twitter/twitter', array(
                 'current_user'      => $current_user,
-                'twitter_meta'      => $twitter_meta,
                 'favorites_chart'   => $favorites_chart,
                 'retweets_chart'    => $retweets_chart,
                 'chart_categories'  => $categories,
@@ -126,7 +129,7 @@ class Twitter extends Controller{
 
     public function add_account()
     {
-        $response = Users_Model::create_twitter_account(base_url('Twitter/add_account'));
+        $response = Users_Model::attach_twitter_account(base_url('Twitter/add_account'));
         switch ($response['status']) {
             case "redirect":
             case "redirect_error":
