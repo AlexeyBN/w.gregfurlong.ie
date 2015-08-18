@@ -133,7 +133,7 @@ class Twitter extends Controller{
             $tweet              = new Tweets_Model();
             $tweet->user_id     = $current_user->user_id;
             $tweet->text        = $_POST['text'];
-            $tweet->date        = $_POST['date'];
+            $tweet->date        = strtotime($_POST['date']);
             $tweet->is_posted   = false;
             $status             = $tweet->save();
             $html               = $this->load->view('twitter/_tweets_table', array('tweets' => $current_user->tweets), TRUE);
@@ -146,7 +146,7 @@ class Twitter extends Controller{
     {
         if ($this->is_ajax() && isset($_POST['id'])) {
             $current_user       = Users_Model::get_current_user();
-            $tweet              = Tweets_Model::find_by_pk($_POST['id']);
+            $tweet              = Tweets_Model::first(array('id' => $_POST['id']));
 
             if ($tweet && $tweet->user_id == $current_user->user_id) {
                 $tweet->delete();

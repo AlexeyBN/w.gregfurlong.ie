@@ -75,20 +75,20 @@ OTwitter = {
         );
     },
     single_datepicker: function() {
-        OTwitter.create_date = $('.single-datepiker').daterangepicker({
+         $('.single-datepiker').daterangepicker({
                 singleDatePicker: true,
                 showDropdowns: true,
                 timePicker: true,
             },
             function(start, end, label) {}
         );
+        OTwitter.create_date = $('.single-datepiker').data('daterangepicker');
     },
     new_tweet: function(e) {
         e.preventDefault();
         var $form       = $(this),
             offset      = moment(OTwitter.create_date.startDate).utcOffset(),
-            m_start     = moment(OTwitter.create_date.startDate).add(offset, 'minutes'),
-            startDate   = moment(m_start.valueOf()).unix();
+            startDate   = moment(OTwitter.create_date.startDate).format('MMMM Do YYYY, h:mm:ss a');
 
         $.ajax({
             type: "POST",
