@@ -1,5 +1,4 @@
 <div id="ajax-content">
-
     <?php if(!Users_Model::is_twitter_account() && !Users_Model::has_twitter_account()): ?>
     <div class="tw-add-account">
         <div id="dashboard-header" class="row dashboard-head">
@@ -25,9 +24,9 @@
         </div>
     </div>
     <?php else: ?>
-        <div class="col-xs-12 col-md-8 daily-progress">
+        <div class="col-xs-12 col-md-12 daily-progress">
             <div class="col-inner section">
-                <h3 class="title">Twitter account information</h3>
+                <h2 class="title">Twitter account information</h2>
                 <p class="description"></p>
 
                 <div class="pull-right timeline">
@@ -51,26 +50,29 @@
                 <div id="twitter_chart" data-columns='[<?php echo json_encode($favorites_chart) ?>, <?php echo json_encode($retweets_chart) ?> ]' data-categories='<?php echo json_encode($chart_categories) ?>'></div>
             </div>
         </div>
-
-        <!--<div class="col-xs-6 col-md-4">
+        <div class="col-xs-12 col-md-6 first-col margin-top-25">
             <div class="col-inner section">
+                <h2>Tweets</h2>
                 <form id="new-tweet" role="form">
                     <div class="form-group">
-                        <label for="email">Email address:</label>
-                        <input type="text" class="form-control" id="email">
+                        <label for="tweet_date">Date</label>
+                        <input type="text" name="tweet[date]" id="tweet_date" class="form-control single-datepiker">
                     </div>
                     <div class="form-group">
-                        <label for="pwd">Password:</label>
-                        <input type="password" class="form-control" id="pwd">
+                        <label for="tweet_text">Tweet Text</label>
+                        <textarea name="tweet[text]" id="tweet_text" maxlength="140" class="form-control"></textarea>
                     </div>
-                    <div class="checkbox">
-                        <label><input type="checkbox"> Remember me</label>
-                    </div>
-                    <button type="submit" class="btn btn-default">Submit</button>
+                    <button type="submit" class="btn btn-default">Tweet</button>
                 </form>
             </div>
-        </div>-->
-
+        </div>
+        <div class="col-xs-12 col-md-6 last-col margin-top-25">
+            <div class="col-inner section tweets-table">
+                <?php $this->view('twitter/_tweets_table', array(
+                    'tweets' => $current_user->tweets
+                )) ?>
+            </div>
+        </div>
     <?php endif; ?>
 
 </div>

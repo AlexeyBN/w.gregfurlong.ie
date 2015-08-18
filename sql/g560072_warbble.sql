@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: localhost
--- Время создания: Авг 17 2015 г., 15:07
+-- Время создания: Авг 18 2015 г., 18:19
 -- Версия сервера: 5.5.43-0ubuntu0.14.04.1
 -- Версия PHP: 5.5.9-1ubuntu4.11
 
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `graph` (
   `webclicks` bigint(20) DEFAULT NULL,
   `coupon` bigint(20) DEFAULT NULL,
   `date` date DEFAULT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 
 --
 -- Дамп данных таблицы `graph`
@@ -49,7 +49,11 @@ INSERT INTO `graph` (`id`, `user_id`, `followers`, `social`, `webclicks`, `coupo
 (8, 70, 1, 10, 10, 10, '2015-08-13'),
 (9, 68, 0, 10, 10, 10, '2015-08-14'),
 (10, 71, 2, 10, 10, 10, '2015-08-14'),
-(11, 71, 2, 10, 10, 10, '2015-08-17');
+(11, 71, 2, 10, 10, 10, '2015-08-17'),
+(12, 73, 2, 10, 10, 10, '2015-08-17'),
+(13, 74, 2, 10, 10, 10, '2015-08-17'),
+(14, 75, 2, 10, 10, 10, '2015-08-17'),
+(15, 75, 2, 10, 10, 10, '2015-08-18');
 
 -- --------------------------------------------------------
 
@@ -61,7 +65,8 @@ CREATE TABLE IF NOT EXISTS `tweets` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `text` text NOT NULL,
-  `date` int(11) NOT NULL
+  `date` int(11) NOT NULL,
+  `is_posted` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -91,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `twitter_oauth_token_secret` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `type` int(1) DEFAULT '2',
   `company` varchar(100) CHARACTER SET utf8 DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=latin1;
 
 --
 -- Дамп данных таблицы `users`
@@ -118,7 +123,8 @@ INSERT INTO `users` (`user_id`, `user_key`, `first_name`, `last_name`, `email`, 
 (60, NULL, 'Vadim', 'Kravtsov', 'vadim.photoman@gmail.com', '', NULL, NULL, NULL, NULL, 1, NULL, '2015-07-13 07:50:59', NULL, NULL, NULL, NULL, NULL, 2, NULL),
 (64, NULL, 'Test', 'Tester', 'test11@test.com', '245eb0261df514f537b429ec6061df50', NULL, NULL, NULL, NULL, 1, 'eccc4b47f08386e701a3afafde1802ae', '2015-08-13 12:01:45', NULL, NULL, NULL, NULL, NULL, 1, NULL),
 (65, NULL, 'Test', 'Tester', 'testerdev@mailinator.com', '245eb0261df514f537b429ec6061df50', NULL, NULL, NULL, NULL, 1, NULL, '2015-08-13 12:03:24', NULL, NULL, NULL, NULL, NULL, 1, NULL),
-(71, NULL, 'GoshaSerij', 'GoshaSerij', '2449285284', '', NULL, NULL, NULL, NULL, 1, NULL, '2015-08-17 09:13:53', NULL, NULL, NULL, NULL, NULL, 2, NULL);
+(72, NULL, 'qwe', 'qwe', 'qwe@qwe.qwe', '76d80224611fc919a5d54f0ff9fba446', NULL, NULL, NULL, NULL, 1, NULL, '2015-05-04 02:05:45', NULL, NULL, NULL, '2449285284-D7oSOF0mNbHCuZHCCXVErwNVzIcfiQNn4XeTS9Z', 'XAUeUBITX2ZVMU299wdoyi33Y3L6Ics0roLJJjG968ZfX', 4, 'emmettogallachoir@gmail.com'),
+(75, NULL, 'GoshaSerij', 'GoshaSerij', '2449285284', '', NULL, NULL, NULL, NULL, 1, NULL, '2015-08-18 16:18:43', NULL, NULL, NULL, NULL, NULL, 3, NULL);
 
 -- --------------------------------------------------------
 
@@ -131,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `user_meta` (
   `user_id` bigint(20) DEFAULT NULL,
   `meta_key` varchar(255) DEFAULT NULL,
   `meta_value` longtext
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=latin1;
 
 --
 -- Дамп данных таблицы `user_meta`
@@ -159,9 +165,9 @@ INSERT INTO `user_meta` (`id`, `user_id`, `meta_key`, `meta_value`) VALUES
 (45, 68, 'social_id', '2449285284'),
 (46, 70, 'social_type', 'twitter'),
 (47, 70, 'social_id', '3384532955'),
-(51, 71, 'social_type', 'twitter'),
-(52, 71, 'social_id', '2449285284'),
-(53, 71, 'twitter_meta', 'O:8:"stdClass":42:{s:2:"id";i:2449285284;s:6:"id_str";s:10:"2449285284";s:4:"name";s:19:"Ð“Ð¾ÑˆÐ° Ð¡ÐµÑ€Ñ‹Ð¹";s:11:"screen_name";s:10:"GoshaSerij";s:8:"location";s:0:"";s:11:"description";s:0:"";s:3:"url";N;s:8:"entities";O:8:"stdClass":1:{s:11:"description";O:8:"stdClass":1:{s:4:"urls";a:0:{}}}s:9:"protected";b:0;s:15:"followers_count";i:2;s:13:"friends_count";i:14;s:12:"listed_count";i:0;s:10:"created_at";s:30:"Thu Apr 17 07:55:53 +0000 2014";s:16:"favourites_count";i:4;s:10:"utc_offset";i:-25200;s:9:"time_zone";s:26:"Pacific Time (US & Canada)";s:11:"geo_enabled";b:0;s:8:"verified";b:0;s:14:"statuses_count";i:7;s:4:"lang";s:2:"en";s:6:"status";O:8:"stdClass":22:{s:10:"created_at";s:30:"Mon Aug 17 06:03:42 +0000 2015";s:2:"id";i:633157232998359040;s:6:"id_str";s:18:"633157232998359040";s:4:"text";s:25:"= https://t.co/IRtaDgYCvm";s:6:"source";s:66:"<a href="http://twitter.com" rel="nofollow">Twitter Web Client</a>";s:9:"truncated";b:0;s:21:"in_reply_to_status_id";N;s:25:"in_reply_to_status_id_str";N;s:19:"in_reply_to_user_id";N;s:23:"in_reply_to_user_id_str";N;s:23:"in_reply_to_screen_name";N;s:3:"geo";N;s:11:"coordinates";N;s:5:"place";N;s:12:"contributors";N;s:13:"retweet_count";i:0;s:14:"favorite_count";i:0;s:8:"entities";O:8:"stdClass":4:{s:8:"hashtags";a:0:{}s:7:"symbols";a:0:{}s:13:"user_mentions";a:0:{}s:4:"urls";a:1:{i:0;O:8:"stdClass":4:{s:3:"url";s:23:"https://t.co/IRtaDgYCvm";s:12:"expanded_url";s:51:"https://twitter.com/rykov/status/633043392226807809";s:11:"display_url";s:29:"twitter.com/rykov/status/6â€¦";s:7:"indices";a:2:{i:0;i:2;i:1;i:25;}}}}s:9:"favorited";b:0;s:9:"retweeted";b:0;s:18:"possibly_sensitive";b:0;s:4:"lang";s:3:"und";}s:20:"contributors_enabled";b:0;s:13:"is_translator";b:0;s:22:"is_translation_enabled";b:0;s:24:"profile_background_color";s:6:"C0DEED";s:28:"profile_background_image_url";s:48:"http://abs.twimg.com/images/themes/theme1/bg.png";s:34:"profile_background_image_url_https";s:49:"https://abs.twimg.com/images/themes/theme1/bg.png";s:23:"profile_background_tile";b:0;s:17:"profile_image_url";s:74:"http://pbs.twimg.com/profile_images/632101586441900033/gFvVra6P_normal.jpg";s:23:"profile_image_url_https";s:75:"https://pbs.twimg.com/profile_images/632101586441900033/gFvVra6P_normal.jpg";s:18:"profile_banner_url";s:59:"https://pbs.twimg.com/profile_banners/2449285284/1439539753";s:18:"profile_link_color";s:6:"0084B4";s:28:"profile_sidebar_border_color";s:6:"C0DEED";s:26:"profile_sidebar_fill_color";s:6:"DDEEF6";s:18:"profile_text_color";s:6:"333333";s:28:"profile_use_background_image";b:1;s:20:"has_extended_profile";b:0;s:15:"default_profile";b:1;s:21:"default_profile_image";b:0;s:9:"following";b:0;s:19:"follow_request_sent";b:0;s:13:"notifications";b:0;}');
+(60, 75, 'social_type', 'twitter'),
+(61, 75, 'social_id', '2449285284'),
+(62, 75, 'twitter_meta', 'O:8:"stdClass":42:{s:2:"id";i:2449285284;s:6:"id_str";s:10:"2449285284";s:4:"name";s:19:"Ð“Ð¾ÑˆÐ° Ð¡ÐµÑ€Ñ‹Ð¹";s:11:"screen_name";s:10:"GoshaSerij";s:8:"location";s:0:"";s:11:"description";s:0:"";s:3:"url";N;s:8:"entities";O:8:"stdClass":1:{s:11:"description";O:8:"stdClass":1:{s:4:"urls";a:0:{}}}s:9:"protected";b:0;s:15:"followers_count";i:2;s:13:"friends_count";i:14;s:12:"listed_count";i:0;s:10:"created_at";s:30:"Thu Apr 17 07:55:53 +0000 2014";s:16:"favourites_count";i:4;s:10:"utc_offset";i:-25200;s:9:"time_zone";s:26:"Pacific Time (US & Canada)";s:11:"geo_enabled";b:0;s:8:"verified";b:0;s:14:"statuses_count";i:8;s:4:"lang";s:2:"en";s:6:"status";O:8:"stdClass":21:{s:10:"created_at";s:30:"Mon Aug 17 12:02:18 +0000 2015";s:2:"id";i:633247476842164224;s:6:"id_str";s:18:"633247476842164224";s:4:"text";s:12:"Poasdasdasds";s:6:"source";s:84:"<a href="https://apigee.com/console/twitter" rel="nofollow">Apigee''s API Console</a>";s:9:"truncated";b:0;s:21:"in_reply_to_status_id";N;s:25:"in_reply_to_status_id_str";N;s:19:"in_reply_to_user_id";N;s:23:"in_reply_to_user_id_str";N;s:23:"in_reply_to_screen_name";N;s:3:"geo";N;s:11:"coordinates";N;s:5:"place";N;s:12:"contributors";N;s:13:"retweet_count";i:0;s:14:"favorite_count";i:0;s:8:"entities";O:8:"stdClass":4:{s:8:"hashtags";a:0:{}s:7:"symbols";a:0:{}s:13:"user_mentions";a:0:{}s:4:"urls";a:0:{}}s:9:"favorited";b:0;s:9:"retweeted";b:0;s:4:"lang";s:2:"de";}s:20:"contributors_enabled";b:0;s:13:"is_translator";b:0;s:22:"is_translation_enabled";b:0;s:24:"profile_background_color";s:6:"C0DEED";s:28:"profile_background_image_url";s:48:"http://abs.twimg.com/images/themes/theme1/bg.png";s:34:"profile_background_image_url_https";s:49:"https://abs.twimg.com/images/themes/theme1/bg.png";s:23:"profile_background_tile";b:0;s:17:"profile_image_url";s:74:"http://pbs.twimg.com/profile_images/632101586441900033/gFvVra6P_normal.jpg";s:23:"profile_image_url_https";s:75:"https://pbs.twimg.com/profile_images/632101586441900033/gFvVra6P_normal.jpg";s:18:"profile_banner_url";s:59:"https://pbs.twimg.com/profile_banners/2449285284/1439539753";s:18:"profile_link_color";s:6:"0084B4";s:28:"profile_sidebar_border_color";s:6:"C0DEED";s:26:"profile_sidebar_fill_color";s:6:"DDEEF6";s:18:"profile_text_color";s:6:"333333";s:28:"profile_use_background_image";b:1;s:20:"has_extended_profile";b:0;s:15:"default_profile";b:1;s:21:"default_profile_image";b:0;s:9:"following";b:0;s:19:"follow_request_sent";b:0;s:13:"notifications";b:0;}');
 
 --
 -- Индексы сохранённых таблиц
@@ -171,6 +177,12 @@ INSERT INTO `user_meta` (`id`, `user_id`, `meta_key`, `meta_value`) VALUES
 -- Индексы таблицы `graph`
 --
 ALTER TABLE `graph`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `tweets`
+--
+ALTER TABLE `tweets`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -195,17 +207,22 @@ ALTER TABLE `user_meta`
 -- AUTO_INCREMENT для таблицы `graph`
 --
 ALTER TABLE `graph`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=16;
+--
+-- AUTO_INCREMENT для таблицы `tweets`
+--
+ALTER TABLE `tweets`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=72;
+  MODIFY `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=76;
 --
 -- AUTO_INCREMENT для таблицы `user_meta`
 --
 ALTER TABLE `user_meta`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=54;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=63;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

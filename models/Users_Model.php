@@ -10,8 +10,6 @@ class Users_Model extends ActiveRecord\Model{
     static $table_name = 'users';
     static $has_many = array(
         array('usermeta', 'foreign_key' => 'user_id', 'class_name' => 'Usermetum'),
-    );
-    static $belongs_to = array(
         array('tweets', 'foreign_key' => 'user_id', 'class_name' => 'Tweets_Model'),
     );
 

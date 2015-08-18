@@ -3118,3 +3118,12 @@ li.dropdown:hover ul{
 [class^="col-"] .col-inner{
     padding: 10px;
 }
+.margin-top-25 {
+    margin-top: 25px;
+}
+.first-col {
+    padding-left:0;
+}
+.last-col {
+    padding-right:0;
+}

@@ -312,7 +312,7 @@
                     </a>
                 </li>
                 <li class="dropdown">
-                    <a href="Twitter" class="dropdown-toggle">
+                    <a href="/Twitter" class="dropdown-toggle">
                         <i class="fa fa-twitter"></i>
                         <span class="hidden-xs">Twitter Feeds</span>
                     </a>

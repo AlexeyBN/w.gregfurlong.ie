@@ -53,9 +53,9 @@ class Twitter extends Controller{
     public function index(){
         $current_user       = Users_Model::get_current_user();
 
-        if ($current_user && $current_user->twitter_oauth_token != NULL && $current_user->twitter_oauth_token_secret != NULL) {
+        /*if ($current_user && $current_user->twitter_oauth_token != NULL && $current_user->twitter_oauth_token_secret != NULL) {
             $current_user->update_token(base_url('Twitter/index'));
-        }
+        }*/
 
         $favorites          = $current_user->get_twitter_favorites();
         $tweets             = $current_user->get_all_tweets();
@@ -125,6 +125,38 @@ class Twitter extends Controller{
                 'retweets_count'    => $retweets_count
             ));
         }
+    }
+    public function add_tweet()
+    {
+        if ($this->is_ajax() && isset($_POST['date']) && isset($_POST['text'])) {
+            $current_user       = Users_Model::get_current_user();
+            $tweet              = new Tweets_Model();
+            $tweet->user_id     = $current_user->user_id;
+            $tweet->text        = $_POST['text'];
+            $tweet->date        = $_POST['date'];
+            $tweet->is_posted   = false;
+            $status             = $tweet->save();
+            $html               = $this->load->view('twitter/_tweets_table', array('tweets' => $current_user->tweets), TRUE);
+            echo json_encode(array('status' => $status, 'html' => $html));
+        }
+        exit;
+    }
+
+    public function remove_tweet()
+    {
+        if ($this->is_ajax() && isset($_POST['id'])) {
+            $current_user       = Users_Model::get_current_user();
+            $tweet              = Tweets_Model::find_by_pk($_POST['id']);
+
+            if ($tweet && $tweet->user_id == $current_user->user_id) {
+                $tweet->delete();
+                $html = $this->load->view('twitter/_tweets_table', array('tweets' => $current_user->tweets), TRUE);
+                echo json_encode(array('status' => true, 'html' => $html));
+            } else {
+                echo json_encode(array('status' => false));
+            }
+        }
+        exit;
     }
 
     public function add_account()

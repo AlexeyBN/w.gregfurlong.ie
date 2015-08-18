@@ -1,4 +1,5 @@
 OTwitter = {
+    create_date: false,
     /**
      * Twitter chart
      * @param columns
@@ -73,6 +74,56 @@ OTwitter = {
             }
         );
     },
+    single_datepicker: function() {
+        OTwitter.create_date = $('.single-datepiker').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                timePicker: true,
+            },
+            function(start, end, label) {}
+        );
+    },
+    new_tweet: function(e) {
+        e.preventDefault();
+        var $form       = $(this),
+            offset      = moment(OTwitter.create_date.startDate).utcOffset(),
+            m_start     = moment(OTwitter.create_date.startDate).add(offset, 'minutes'),
+            startDate   = moment(m_start.valueOf()).unix();
+
+        $.ajax({
+            type: "POST",
+            url: '/Twitter/add_tweet',
+            dataType: "json",
+            data: {
+                date: startDate,
+                text: $form.find('#tweet_text').val()
+            },
+            success: function(data){
+                if (data.status) {
+                    $form.find('#tweet_text').val('');
+                    $('.tweets-table').html(data.html)
+                }
+            }
+        })
+        return false;
+    },
+    remove_tweet: function(e) {
+        e.preventDefault();
+        var $this = $(this);
+        $.ajax({
+            type: "POST",
+            url: '/Twitter/remove_tweet',
+            dataType: "json",
+            data: {
+                id: $this.data('id'),
+            },
+            success: function(data){
+                if (data.status) {
+                    $('.tweets-table').html(data.html)
+                }
+            }
+        })
+    }
 };
 
 /**
@@ -81,4 +132,7 @@ OTwitter = {
 $(document).ready(function(){
     OTwitter.chart();
     OTwitter.daterange();
+    OTwitter.single_datepicker();
+    $(document).on('submit', '#new-tweet', OTwitter.new_tweet)
+    $(document).on('click', '.remove-tweet', OTwitter.remove_tweet)
 })
