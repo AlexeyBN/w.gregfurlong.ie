@@ -28,7 +28,7 @@ class Cron
         ));
 
         foreach ($tweets as $tweet) {
-            if (time() > $tweet->date) {
+            if (time() + $tweet->offset * 60 > $tweet->date) {
                 $status = $this->post_to($tweet);
                 if (isset($status->id) && $status->id > 0) {
                     $tweet->is_posted = true;

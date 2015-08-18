@@ -96,7 +96,8 @@ OTwitter = {
             dataType: "json",
             data: {
                 date: startDate,
-                text: $form.find('#tweet_text').val()
+                text: $form.find('#tweet_text').val(),
+                offset: offset,
             },
             success: function(data){
                 if (data.status) {
