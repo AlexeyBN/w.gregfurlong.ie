@@ -62,7 +62,8 @@ OTwitter = {
                         overlay.remove();
                         $('.twitter_datepicker').attr({disabled: false});
                         if (data.status) {
-                            twitter_chart([
+                            $('.twitter-chart-info').html(data.html)
+                            OTwitter.chart([
                                 data.favorites_chart,
                                 data.retweets_chart,
                             ], data.chart_categories);

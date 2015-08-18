@@ -50,9 +50,8 @@ class Router {
         $this->routers = isset($route) && !empty($route) ? $route : $this->routers;
         // Loop through the route array looking for wildcards
         foreach($this->routers as $k=>$v){
-            //$c = str_replace( array(':any',':num'), array('[a-zA-Z0-9]', '[0-9]'), rtrim($k, "/") );
-            //if(preg_match('/'.$k.'/', $uri)) {
-            if($k == $uri) {
+            $c = str_replace( array(':any',':num'), array('[a-zA-Z0-9]', '[0-9]'), rtrim($k, "/") );
+            if(preg_match('/'.$c.'/', $uri)) {
                 $s = explode( "/", rtrim( $v, "/" ));
                 if( file_exists( ABSPATH."controller/".$s[0].".php" ) || file_exists( ABSPATH."controller/".ucfirst($s[0]).".php" ) ){
                     $this->controller = ucfirst($s[0]);
