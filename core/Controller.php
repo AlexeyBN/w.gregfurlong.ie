@@ -94,6 +94,32 @@ class Controller {
             $this->load->view($dis['view'], $dis );
         }
     }
+
+    public function layout($type = '', $views = '', $data = array())
+    {
+        $dis['base_url']        = BASE_URL;
+        $dis['this']            = $this;
+        $dis['page_title']      = $this->page_title;
+        $dis['site_title']      = $this->site_title;
+        $dis['js_variables']    = $this->_js_variables;
+        $dis['js_scripts']      = $this->_js;
+        $dis['csses']           = $this->_css;
+        $login                  = $this->session->userdata('login');
+
+        $this->load->model('Users_Model');
+        $dis['userlogin'] = Users_Model::find_by_user_id( $login['user_id'] );
+
+        if (!isset($dis['menu_active']) || empty($dis['menu_active'])) {
+            $dis['menu_active'] = $this->menu_active;
+        }
+
+        $data = array_merge($dis, $data);
+
+        $this->load->view("layout/$type/header", $data);
+        $this->load->view($views, $data);
+        $this->load->view("layout/$type/footer", $data);
+    }
+
     /**
      * Return is ajax request
      * @return bool

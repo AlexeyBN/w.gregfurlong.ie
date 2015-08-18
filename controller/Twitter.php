@@ -15,6 +15,14 @@ class Twitter extends Controller{
         $this->_js = array(
             array(
                 'type'      => 'admin',
+                'file'      => 'd3.v3.min.js',
+                'location'  => 'footer',
+            ),array(
+                'type'      => 'admin',
+                'file'      => 'c3.min.js',
+                'location'  => 'footer',
+            ),array(
+                'type'      => 'admin',
                 'file'      => 'moment.min.js',
                 'location'  => 'footer',
             ),
@@ -34,6 +42,10 @@ class Twitter extends Controller{
             array(
                 'type'      => 'admin',
                 'file'      => 'daterangepicker.css',
+            ),
+            array(
+                'type'      => 'admin',
+                'file'      => 'c3.min.css',
             ),
         );
     }
@@ -84,7 +96,7 @@ class Twitter extends Controller{
         if ($this->is_ajax() && isset($_POST['startDate']) && isset($_POST['endDate'])) {
             echo json_encode(array(
                 'status'    => true,
-                'html'      => $this->load->view('dashboard/social/_twitter_chart', array(
+                'html'      => $this->load->view('twitter/_twitter_chart', array(
                     'favorites_chart'   => $favorites_chart,
                     'chart_categories'  => $categories,
                     'startDate'         => date('Y/d/m', $date_first),
@@ -98,8 +110,7 @@ class Twitter extends Controller{
             ));
             exit;
         } else {
-            $this->view_admin( array(
-                'view'              => 'social/twitter',
+            $this->layout('admin', 'twitter/twitter', array(
                 'current_user'      => $current_user,
                 'twitter_meta'      => $twitter_meta,
                 'favorites_chart'   => $favorites_chart,
@@ -108,8 +119,8 @@ class Twitter extends Controller{
                 'startDate'         => date('Y/d/m', $date_first),
                 'endDate'           => date('Y/d/m', $date_end),
                 'favorites_count'   => $favorites_count,
-                'retweets_count'    => $retweets_count,
-            ) );
+                'retweets_count'    => $retweets_count
+            ));
         }
     }
 
