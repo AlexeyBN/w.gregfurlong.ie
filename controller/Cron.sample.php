@@ -9,7 +9,7 @@ error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE &
 
 class Cron
 {
-    private $path = '/home/dev10/www/gregfurlong.local/';
+    private $path = '/home/g560072/public_html/w/';
 
     public function __construct()
     {
