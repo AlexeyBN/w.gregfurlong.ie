@@ -306,7 +306,7 @@
                     </a>
                 </li>
                 <li class="dropdown">
-                    <a href="Facebook" class="dropdown-toggle">
+                    <a href="/Facebook/index" class="dropdown-toggle">
                         <i class="fa fa-facebook"></i>
                         <span class="hidden-xs">Facebook</span>
                     </a>

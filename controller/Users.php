@@ -63,9 +63,17 @@ class Users extends Controller{
             switch( $social ){
 
                 case "facebook":
-
                     $response = Users_Model::create_facebook_account(base_url('login/facebook'));
-
+                    switch ($response['status']) {
+                        case "redirect":
+                        case "redirect_error":
+                        case "success":
+                            redirect($response['url']);
+                            break;
+                        case "error":
+                            $dis['message'] = '<p class="error">'.$response['message'].'</p>';
+                            break;
+                    }
                     break;
 
                 case "twitter":
