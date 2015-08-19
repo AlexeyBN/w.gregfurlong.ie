@@ -29,6 +29,24 @@ OTwitter = {
             }
         });
     },
+    show_alert: function (message, type) {
+        type = type || 'danger';
+        var $alert = $('<div class="alert alert-'+type+' alert-dismissible alert-fixed" role="alert">\
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
+                            '+message+'\
+                        </div>');
+        $('.alerts-container').append($alert);
+
+        var timer = setTimeout(function(){
+            $alert.remove();
+            clearTimeout(timer);
+        }, 4000)
+
+    },
+
+    close_alert: function (e) {
+        $(this).closest('alert').remove();
+    },
 
     /**
      * Datepicker
@@ -37,7 +55,7 @@ OTwitter = {
         $('.twitter_datepicker').daterangepicker(
             {
                 locale: {
-                    format: "YYYY/DD/MM"
+                    format: "DD/MM/YY"
                 },
             },
             function(start, end, label){
@@ -80,6 +98,9 @@ OTwitter = {
                 showDropdowns: true,
                 timePicker: true,
                 minDate: new Date(),
+                locale: {
+                    format: "hh:mm a on DD/MM/YY"
+                },
             },
             function(start, end, label) {}
         );
@@ -102,16 +123,12 @@ OTwitter = {
             },
             success: function(data){
                 if (data.status && !data.errors) {
+                    OTwitter.show_alert('New tweet has added.', 'success');
                     $form.find('#tweet_text').val('');
                     $('.tweets-table').html(data.html);
-
-                    $.each($('#new-tweet').find('.form-control'), function(index, item){
-                        $(item).removeClass('error');
-                    })
-
                 } else {
                     $.each (data.errors, function(index, item){
-                        $('#tweet_' + index).addClass('error');
+                        OTwitter.show_alert(item, 'danger')
                     })
                 }
             }
@@ -144,6 +161,7 @@ $(document).ready(function(){
     OTwitter.chart();
     OTwitter.daterange();
     OTwitter.single_datepicker();
-    $(document).on('submit', '#new-tweet', OTwitter.new_tweet)
-    $(document).on('click', '.remove-tweet', OTwitter.remove_tweet)
+    $(document).on('submit', '#new-tweet', OTwitter.new_tweet);
+    $(document).on('click', '.remove-tweet', OTwitter.remove_tweet);
+    $(document).on('click', '.alert .close', OTwitter.close_alert);
 })

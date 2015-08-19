@@ -13,10 +13,12 @@
             <?php foreach ($tweets as $tweet): ?>
                 <tr>
                     <td><?php echo $tweet->id ?></td>
-                    <td><?php echo date('Y/d/m h:i:s A', $tweet->date) ?></td>
+                    <td><?php echo date('h:i:s A \o\n d/m/y', $tweet->date) ?></td>
                     <td><?php echo $tweet->is_posted? "Posted": "Not Yet" ?></td>
                     <td>
-                        <button data-id="<?php echo $tweet->id ?>" type="button" class="btn btn-danger remove-tweet">Delete</span></button>
+                        <?php if (!$tweet->is_posted): ?>
+                            <button data-id="<?php echo $tweet->id ?>" type="button" class="btn btn-danger remove-tweet">Delete</span></button>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

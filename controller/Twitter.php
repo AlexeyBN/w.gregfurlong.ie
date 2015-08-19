@@ -103,8 +103,8 @@ class Twitter extends Controller{
                 'html'      => $this->load->view('twitter/_twitter_chart', array(
                     'favorites_chart'   => $favorites_chart,
                     'chart_categories'  => $categories,
-                    'startDate'         => date('Y/d/m', $date_first),
-                    'endDate'           => date('Y/d/m', $date_end),
+                    'startDate'         => date('d/m/y', $date_first),
+                    'endDate'           => date('d/m/y', $date_end),
                     'favorites_count'   => $favorites_count,
                     'retweets_count'    => $retweets_count,
                 ), TRUE),
@@ -119,8 +119,8 @@ class Twitter extends Controller{
                 'favorites_chart'   => $favorites_chart,
                 'retweets_chart'    => $retweets_chart,
                 'chart_categories'  => $categories,
-                'startDate'         => date('Y/d/m', $date_first),
-                'endDate'           => date('Y/d/m', $date_end),
+                'startDate'         => date('d/m/y', $date_first),
+                'endDate'           => date('d/m/y', $date_end),
                 'favorites_count'   => $favorites_count,
                 'retweets_count'    => $retweets_count
             ));
@@ -132,10 +132,10 @@ class Twitter extends Controller{
             $errors = array();
 
             if (empty($_POST['date'])) {
-                $errors['date'] = 'Can\'t be blank.';
+                $errors['date'] = 'Date field can\'t be blank.';
             }
             if (empty($_POST['text'])) {
-                $errors['text'] = 'Can\'t be blank.';
+                $errors['text'] = 'Text field can\'t be blank.';
             }
 
             if (empty($errors)) {
