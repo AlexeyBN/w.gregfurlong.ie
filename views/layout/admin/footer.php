@@ -14,5 +14,6 @@
         <script src="<?php echo $base_url; ?>assets/<?php echo $script['type'] . '/js/' . $script['file'] ?>"></script>
         <?php endif; ?>
     <?php endforeach; ?>
+<div class="alerts-container"></div>
 </body>
 </html>

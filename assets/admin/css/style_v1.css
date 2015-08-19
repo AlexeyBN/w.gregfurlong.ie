@@ -3130,3 +3130,32 @@ li.dropdown:hover ul{
 .form-control.error {
     border-color: red;
 }
+
+.alerts-container {
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 10000;
+    margin: 10px;
+    min-width: 20%;
+}
+.alert-fixed {
+    width:100%;
+}
+
+.twitter_datepicker {
+    background: #fff;
+    cursor: pointer;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    width: 100%;
+}
+
+.twitter_datepicker_dropdown {
+    position: absolute;
+    right: 0;
+}
+
+.twitter_datepicker_dropdown .ranges {
+    clear:both;
+}

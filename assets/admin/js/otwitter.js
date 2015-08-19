@@ -29,16 +29,65 @@ OTwitter = {
             }
         });
     },
+    show_alert: function (message, type) {
+        type = type || 'danger';
+        var $alert = $('<div class="alert alert-'+type+' alert-dismissible alert-fixed" role="alert">\
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
+                            '+message+'\
+                        </div>');
+        $('.alerts-container').append($alert);
+
+        var timer = setTimeout(function(){
+            $alert.remove();
+            clearTimeout(timer);
+        }, 4000)
+
+    },
+
+    close_alert: function (e) {
+        $(this).closest('alert').remove();
+    },
+
+    update_graph: function(startDate, endDate) {
+        var overlay = false;
+        $('#twitter_chart').append(overlay = $('<div class="background-overlay"></div>'))
+        $('.twitter_datepicker').attr({disabled: true});
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            data: {
+                startDate: startDate,
+                endDate: endDate
+            },
+            success: function(data){
+                overlay.remove();
+                $('.twitter_datepicker').attr({disabled: false});
+                if (data.status) {
+                    $('.twitter-chart-info').html(data.html)
+                    OTwitter.chart([
+                        data.favorites_chart,
+                        data.retweets_chart,
+                    ], data.chart_categories);
+                }
+            }
+        })
+    },
 
     /**
      * Datepicker
      */
-    daterange: function () {
+    daterange: function (type) {
         $('.twitter_datepicker').daterangepicker(
             {
                 locale: {
-                    format: "YYYY/DD/MM"
+                    format: "DD/MM/YY"
                 },
+                parentEl: '.twitter_datepicker_dropdown',
+                opens: 'left',
+                singleDatePicker: type == 'single',
+                startDate: moment().subtract(7, 'days'),
+                endDate: type == 'single'? null: moment(),
+                autoApply: true,
             },
             function(start, end, label){
                 var offset = moment(start).utcOffset();
@@ -47,32 +96,24 @@ OTwitter = {
                     m_end     = moment(end).add(offset, 'minutes');
 
                 var startDate = moment(m_start.valueOf()).unix(),
-                    endDate = moment(m_end.valueOf()).unix(),
-                    overlay = false;
+                    endDate = moment(m_end.valueOf()).unix();
 
-                $('#twitter_chart').append(overlay = $('<div class="background-overlay"></div>'))
-                $('.twitter_datepicker').attr({disabled: true});
-                $.ajax({
-                    type: "POST",
-                    dataType: "json",
-                    data: {
-                        startDate: startDate,
-                        endDate: endDate
-                    },
-                    success: function(data){
-                        overlay.remove();
-                        $('.twitter_datepicker').attr({disabled: false});
-                        if (data.status) {
-                            $('.twitter-chart-info').html(data.html)
-                            OTwitter.chart([
-                                data.favorites_chart,
-                                data.retweets_chart,
-                            ], data.chart_categories);
-                        }
-                    }
-                })
+                OTwitter.update_graph(startDate, endDate);
+
             }
         );
+        $('.twitter_datepicker').on('showCalendar.daterangepicker', function(ev, picker) {
+            if (!$('.twitter_datepicker_dropdown .ranges + .twitter_datepicker_type').length) {
+                var single = $('.twitter_datepicker').data('daterangepicker').singleDatePicker;
+
+                $('.twitter_datepicker_dropdown .ranges').after('<select class="form-control twitter_datepicker_type">\
+                                                                        <option '+(single? '': 'selected')+' value="range">Range</option>\
+                                                                        <option '+(single? 'selected': '')+' value="single">Single</option>\
+                                                                  </select>');
+            }
+
+        });
+
     },
     single_datepicker: function() {
          $('.single-datepiker').daterangepicker({
@@ -80,6 +121,9 @@ OTwitter = {
                 showDropdowns: true,
                 timePicker: true,
                 minDate: new Date(),
+                locale: {
+                    format: "hh:mm a on DD/MM/YY"
+                },
             },
             function(start, end, label) {}
         );
@@ -102,16 +146,12 @@ OTwitter = {
             },
             success: function(data){
                 if (data.status && !data.errors) {
+                    OTwitter.show_alert('New tweet has added.', 'success');
                     $form.find('#tweet_text').val('');
                     $('.tweets-table').html(data.html);
-
-                    $.each($('#new-tweet').find('.form-control'), function(index, item){
-                        $(item).removeClass('error');
-                    })
-
                 } else {
                     $.each (data.errors, function(index, item){
-                        $('#tweet_' + index).addClass('error');
+                        OTwitter.show_alert(item, 'danger')
                     })
                 }
             }
@@ -144,6 +184,11 @@ $(document).ready(function(){
     OTwitter.chart();
     OTwitter.daterange();
     OTwitter.single_datepicker();
-    $(document).on('submit', '#new-tweet', OTwitter.new_tweet)
-    $(document).on('click', '.remove-tweet', OTwitter.remove_tweet)
+    $(document).on('submit', '#new-tweet', OTwitter.new_tweet);
+    $(document).on('click', '.remove-tweet', OTwitter.remove_tweet);
+    $(document).on('click', '.alert .close', OTwitter.close_alert);
+    $(document).on('change', '.twitter_datepicker_type', function(){
+        var type = $(this).val();
+        OTwitter.daterange(type)
+    });
 })
