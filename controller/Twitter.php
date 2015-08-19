@@ -129,16 +129,29 @@ class Twitter extends Controller{
     public function add_tweet()
     {
         if ($this->is_ajax() && isset($_POST['date']) && isset($_POST['text']) && isset($_POST['offset'])) {
-            $current_user       = Users_Model::get_current_user();
-            $tweet              = new Tweets_Model();
-            $tweet->user_id     = $current_user->user_id;
-            $tweet->text        = $_POST['text'];
-            $tweet->date        = strtotime($_POST['date']);
-            $tweet->offset      = $_POST['offset'];
-            $tweet->is_posted   = false;
-            $status             = $tweet->save();
-            $html               = $this->load->view('twitter/_tweets_table', array('tweets' => $current_user->tweets), TRUE);
-            echo json_encode(array('status' => $status, 'html' => $html));
+            $errors = array();
+
+            if (empty($_POST['date'])) {
+                $errors['date'] = 'Can\'t be blank.';
+            }
+            if (empty($_POST['text'])) {
+                $errors['text'] = 'Can\'t be blank.';
+            }
+
+            if (empty($errors)) {
+                $current_user       = Users_Model::get_current_user();
+                $tweet              = new Tweets_Model();
+                $tweet->user_id     = $current_user->user_id;
+                $tweet->text        = $_POST['text'];
+                $tweet->date        = strtotime($_POST['date']);
+                $tweet->offset      = $_POST['offset'];
+                $tweet->is_posted   = false;
+                $status             = $tweet->save();
+                $html               = $this->load->view('twitter/_tweets_table', array('tweets' => $current_user->tweets), TRUE);
+                echo json_encode(array('status' => $status, 'html' => $html));
+            } else {
+                echo json_encode(array('status' => false, 'errors' => $errors));
+            }
         }
         exit;
     }

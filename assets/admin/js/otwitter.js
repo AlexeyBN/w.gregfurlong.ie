@@ -79,6 +79,7 @@ OTwitter = {
                 singleDatePicker: true,
                 showDropdowns: true,
                 timePicker: true,
+                minDate: new Date(),
             },
             function(start, end, label) {}
         );
@@ -100,9 +101,18 @@ OTwitter = {
                 offset: offset,
             },
             success: function(data){
-                if (data.status) {
+                if (data.status && !data.errors) {
                     $form.find('#tweet_text').val('');
-                    $('.tweets-table').html(data.html)
+                    $('.tweets-table').html(data.html);
+
+                    $.each($('#new-tweet').find('.form-control'), function(index, item){
+                        $(item).removeClass('error');
+                    })
+
+                } else {
+                    $.each (data.errors, function(index, item){
+                        $('#tweet_' + index).addClass('error');
+                    })
                 }
             }
         })
