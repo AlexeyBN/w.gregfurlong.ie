@@ -3142,3 +3142,20 @@ li.dropdown:hover ul{
 .alert-fixed {
     width:100%;
 }
+
+.twitter_datepicker {
+    background: #fff;
+    cursor: pointer;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    width: 100%;
+}
+
+.twitter_datepicker_dropdown {
+    position: absolute;
+    right: 0;
+}
+
+.twitter_datepicker_dropdown .ranges {
+    clear:both;
+}

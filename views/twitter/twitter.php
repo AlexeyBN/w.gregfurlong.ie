@@ -33,7 +33,8 @@
 
                     <div class="period_time pull-right">
 
-                        <input type="text" class="form-control twitter_datepicker" value="<?php echo sprintf('%s - %s', $startDate, $endDate) ?>">
+                        <input type="text" class="form-control twitter_datepicker">
+                        <div class="twitter_datepicker_dropdown"></div>
 
                     </div>
 
