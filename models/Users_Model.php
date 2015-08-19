@@ -1,9 +1,11 @@
 <?php
-class Users_Model extends ActiveRecord\Model{
 
-    const USER_TYPE_BY_EMAIL        = 2;
+class Users_Model extends B_Model{
+
+    const USER_TYPE_DEFAULT         = 2;
     const USER_TYPE_TWITTER         = 3;
     const USER_TYPE_HAS_TWITTER     = 4;
+    const USER_TYPE_FACEBOOK        = 5;
 
     static private $current_user = false;
 
@@ -197,6 +199,143 @@ class Users_Model extends ActiveRecord\Model{
                 $this->twitter_oauth_token_secret = $oauth_verifier['oauth_token_secret'];
                 $this->save();
             }
+        }
+    }
+
+    static function create_facebook_account($redirect_url)
+    {
+        $config = get_config('facebook');
+
+        $helper = new FacebookRedirectLoginHelper(base_url('login/facebook'), $config['app_id'], $config['app_secret']);
+
+        FacebookSession::enableAppSecretProof(false);
+
+        $session = $helper->getSessionFromRedirect();
+
+        $userdata = $_SESSION['check_login'];
+
+        if ( isset( $session ) && $userdata ) {
+
+            // graph api request for user data
+
+            $request = new FacebookRequest( $session, 'GET', '/me?fields=first_name,last_name,email');
+
+            $response = $request->execute();
+
+            // get response
+
+            $graphObject = $response->getGraphObject();
+
+            $user = Users_Model::find_by_email($graphObject->getProperty('email'));
+
+            if(sizeof($user)<=0){
+
+                $user = new Users_Model();
+
+            }
+
+            $user->first_name = $graphObject->getProperty('first_name');
+
+            $user->last_name = $graphObject->getProperty('last_name');
+
+            $user->email = $graphObject->getProperty('email');
+
+            $user->registration_date = date("Y-m-d H:i:s");
+
+            $user->save();
+
+            /**
+
+             * Update social meta key
+
+             */
+
+            $UserMeta = Usermetum::find_by_user_id_and_meta_key_and_meta_value( $user->user_id,'social_type','facebook');
+
+            if( sizeof($UserMeta)<=0){
+
+                $UserMeta = new Usermetum();
+
+            }
+
+            $UserMeta->user_id = $user->user_id;
+
+            $UserMeta->meta_key = 'social_type';
+
+            $UserMeta->meta_value = 'facebook';
+
+            $UserMeta->save();
+
+
+
+            /**
+
+             * Update social meta value
+
+             */
+
+
+
+            $UserMeta = Usermetum::find_by_user_id_and_meta_key_and_meta_value( $user->user_id,'social_id',$graphObject->getProperty('id') );
+
+            if( sizeof($UserMeta)<=0){
+
+                $UserMeta = new Usermetum();
+
+            }
+
+            $UserMeta->user_id = $user->user_id;
+
+            $UserMeta->meta_key = 'social_id';
+
+            $UserMeta->meta_value = $graphObject->getProperty('id');
+
+            $UserMeta->save();
+
+            // see if we have a session
+
+            $_SESSION['login'] =  array(
+
+                'user_id' => $user->user_id,
+
+                'email' => $graphObject->getProperty('email'),
+
+                'user_level' => 1,
+
+                'first_name' => $graphObject->getProperty('first_name'),
+
+                'last_name' => $graphObject->getProperty('last_name'),
+
+            );
+
+            redirect( BASE_URL."Dashboard" );
+
+        } else {
+
+            $permissions = array(
+
+                'publish_actions',
+
+                'email',
+
+                'user_location',
+
+                'user_birthday',
+
+                'user_likes',
+
+                'public_profile',
+
+                'user_friends'
+
+            );
+
+            $_SESSION['check_login'] = true;
+
+            $loginUrl = $helper->getLoginUrl($permissions);
+
+            redirect($loginUrl);
+
         }
     }
 
