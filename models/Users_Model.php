@@ -251,6 +251,7 @@ class Users_Model extends ActiveRecord\Model{
     redirect_uri=http%3A%2F%2Fbenbiddington.wordpress.com&
     scope=user_photos,email,user_birthday,user_online_presence,offline_access
          * */
+        //https://graph.facebook.com/oauth/access_token?client_id=APP_ID&client_secret=APP_SECRET&grant_type=fb_exchange_token&fb_exchange_token=EXISTING_ACCESS_TOKEN
         return false;
     }
 
@@ -265,6 +266,9 @@ class Users_Model extends ActiveRecord\Model{
         $session = $helper->getSessionFromRedirect();
         $userdata = $_SESSION['check_login'];
         if ( isset( $session ) && $userdata ) {
+
+            $accessToken = $session->getAccessToken();
+            $longLivedAccessToken = $accessToken->extend($config['app_id'], $config['app_secret']);
             // graph api request for user data
             $request = new FacebookRequest( $session, 'GET', '/me?fields=first_name,last_name,email');
             $response = $request->execute();
