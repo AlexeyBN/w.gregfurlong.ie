@@ -4,7 +4,6 @@
     <!-- Table -->
     <table class="table">
         <tr>
-            <th>ID</th>
             <th>Date</th>
             <th>Status</th>
             <th>Action</th>
@@ -12,7 +11,6 @@
         <?php if(!empty($tweets)): ?>
             <?php foreach ($tweets as $tweet): ?>
                 <tr>
-                    <td><?php echo $tweet->id ?></td>
                     <td><?php echo date('h:i:s A \o\n d/m/y', $tweet->date) ?></td>
                     <td><?php echo $tweet->is_posted? "Posted": "Not Yet" ?></td>
                     <td>

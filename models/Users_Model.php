@@ -76,7 +76,7 @@ class Users_Model extends ActiveRecord\Model{
         return false;
     }
 
-    function get_all_tweets()
+    function get_retweets_of_me()
     {
         $current_user = self::get_current_user();
         if ($current_user && ($current_user->type == self::USER_TYPE_HAS_TWITTER || $current_user->type == self::USER_TYPE_TWITTER)) {
@@ -87,11 +87,11 @@ class Users_Model extends ActiveRecord\Model{
             $twitter_config = get_config('twitter');
             require_once (ABSPATH . "/includes/plugins/twitter/twitteroauth.php");
             $connection = new TwitterOAuth($twitter_config['key'], $twitter_config['secret'], $verifier['oauth_token'], $verifier['oauth_token_secret']);
-            $tweets = $connection->get('statuses/user_timeline', array(
-                'user_id'       => $verifier['user_id'],
-                'screen_name'   => $verifier['screen_name'],
+            $retweets_of_me = $connection->get('statuses/retweets_of_me', array(
+                'user_id'               => $verifier['user_id'],
+                'screen_name'           => $verifier['screen_name'],
             ));
-            return $tweets;
+            return $retweets_of_me;
         }
         return false;
     }

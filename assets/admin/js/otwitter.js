@@ -1,5 +1,4 @@
 OTwitter = {
-    create_date: false,
     /**
      * Twitter chart
      * @param columns
@@ -103,10 +102,10 @@ OTwitter = {
             }
         );
         $('.twitter_datepicker').on('showCalendar.daterangepicker', function(ev, picker) {
-            if (!$('.twitter_datepicker_dropdown .ranges + .twitter_datepicker_type').length) {
+            if (!$('.twitter_datepicker_dropdown .dropdown-menu .twitter_datepicker_type').length) {
                 var single = $('.twitter_datepicker').data('daterangepicker').singleDatePicker;
 
-                $('.twitter_datepicker_dropdown .ranges').after('<select class="form-control twitter_datepicker_type">\
+                $('.twitter_datepicker_dropdown .calendar.left').before('<select class="form-control twitter_datepicker_type">\
                                                                         <option '+(single? '': 'selected')+' value="range">Range</option>\
                                                                         <option '+(single? 'selected': '')+' value="single">Single</option>\
                                                                   </select>');
@@ -127,13 +126,12 @@ OTwitter = {
             },
             function(start, end, label) {}
         );
-        OTwitter.create_date = $('.single-datepiker').data('daterangepicker');
     },
     new_tweet: function(e) {
         e.preventDefault();
         var $form       = $(this),
-            offset      = moment(OTwitter.create_date.startDate).utcOffset(),
-            startDate   = moment(OTwitter.create_date.startDate).format('MMMM Do YYYY, h:mm:ss a');
+            offset      = moment($('.single-datepiker').data('daterangepicker').startDate).utcOffset(),
+            startDate   = moment($('.single-datepiker').data('daterangepicker').startDate).format('MMMM Do YYYY, h:mm:ss a');
 
         $.ajax({
             type: "POST",
@@ -174,7 +172,12 @@ OTwitter = {
                 }
             }
         })
-    }
+    },
+    tweet_count_left: function(e) {
+        var max_length = parseInt($(this).attr('maxlength')),
+            str_length = $(this).val().length;
+        $('.tweet-text-count-left').html(max_length - str_length);
+    },
 };
 
 /**
@@ -184,11 +187,15 @@ $(document).ready(function(){
     OTwitter.chart();
     OTwitter.daterange();
     OTwitter.single_datepicker();
+    $(document).on('keydown', '#tweet_text', OTwitter.tweet_count_left);
     $(document).on('submit', '#new-tweet', OTwitter.new_tweet);
     $(document).on('click', '.remove-tweet', OTwitter.remove_tweet);
     $(document).on('click', '.alert .close', OTwitter.close_alert);
     $(document).on('change', '.twitter_datepicker_type', function(){
         var type = $(this).val();
         OTwitter.daterange(type)
+        $('.twitter_datepicker').data('daterangepicker').setStartDate(false);
+        $('.twitter_datepicker').data('daterangepicker').setEndDate(false);
+        $('.twitter_datepicker').data('daterangepicker').show();
     });
 })

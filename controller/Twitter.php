@@ -58,7 +58,7 @@ class Twitter extends Controller{
         }*/
 
         $favorites          = $current_user->get_twitter_favorites();
-        $tweets             = $current_user->get_all_tweets();
+        $retweets_of_me     = $current_user->get_retweets_of_me();
         $favorites_chart    = array('Favorites');
         $retweets_chart     = array('Retweets');
         $favorites_count    = 0;
@@ -85,10 +85,10 @@ class Twitter extends Controller{
                 }
             }
             // Retweets
-            foreach ($tweets as $tweet) {
-                if (date('Y-m-d', strtotime($tweet->created_at)) == date('Y-m-d', $date_start)) {
-                    $retweets_chart[$index] += $tweet->retweet_count;
-                    $retweets_count += $tweet->retweet_count;
+            foreach ($retweets_of_me as $retweet) {
+                if (date('Y-m-d', strtotime($retweet->created_at)) == date('Y-m-d', $date_start)) {
+                    $retweets_chart[$index] += $retweet->retweet_count;
+                    $retweets_count += $retweet->retweet_count;
                 }
             }
             $date_start = strtotime('+1 day', $date_start);

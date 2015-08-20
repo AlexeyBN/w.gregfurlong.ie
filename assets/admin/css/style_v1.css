@@ -3159,3 +3159,9 @@ li.dropdown:hover ul{
 .twitter_datepicker_dropdown .ranges {
     clear:both;
 }
+
+.tweet-text-count-left {
+    color: #ccc;
+    font-size: 12px;
+    text-align: right;
+}
