@@ -145,7 +145,7 @@ class Twitter extends Controller{
                 $tweet->text        = $_POST['text'];
                 $tweet->date        = strtotime($_POST['date']);
                 $tweet->offset      = $_POST['offset'];
-                $tweet->is_posted   = false;
+                $tweet->status      = Tweets_Model::STATUS_NOT_SENDED;
                 $status             = $tweet->save();
                 $html               = $this->load->view('twitter/_tweets_table', array('tweets' => $current_user->tweets), TRUE);
                 echo json_encode(array('status' => $status, 'html' => $html));
@@ -166,6 +166,21 @@ class Twitter extends Controller{
                 $tweet->delete();
                 $html = $this->load->view('twitter/_tweets_table', array('tweets' => $current_user->tweets), TRUE);
                 echo json_encode(array('status' => true, 'html' => $html));
+            } else {
+                echo json_encode(array('status' => false));
+            }
+        }
+        exit;
+    }
+
+    public function edit_tweet()
+    {
+        if ($this->is_ajax() && isset($_POST['id'])) {
+            $current_user       = Users_Model::get_current_user();
+            $tweet              = Tweets_Model::first(array('id' => $_POST['id']));
+
+            if ($tweet && $tweet->user_id == $current_user->user_id) {
+                echo json_encode(array('status' => true, 'tweet' => $tweet->attributes()));
             } else {
                 echo json_encode(array('status' => false));
             }

@@ -3165,3 +3165,9 @@ li.dropdown:hover ul{
     font-size: 12px;
     text-align: right;
 }
+.remove-tweet {
+    color: red;
+}
+.edit-tweet {
+    color: #00a605;
+}

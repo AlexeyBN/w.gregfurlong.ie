@@ -31,7 +31,9 @@ class Controller {
         self::$instance =& $this;
         $this->load = new Loader();
         $this->load->library('Session');
+        $this->load->library('Swiftmailer');
         $this->session = new Session();
+        $this->email = new Swiftmailer();
         $this->load->helper('config');
         $this->load->helper('url');
         $this->load->model('Users_Model');

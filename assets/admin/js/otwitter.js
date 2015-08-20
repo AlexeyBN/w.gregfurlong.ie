@@ -156,6 +156,24 @@ OTwitter = {
         })
         return false;
     },
+    edit_tweet: function(e) {
+        e.preventDefault();
+        var $this = $(this);
+        $.ajax({
+            type: "POST",
+            url: '/Twitter/edit_tweet',
+            dataType: "json",
+            data: {
+                id: $this.data('id'),
+            },
+            success: function(data){
+                if (data.status) {
+                    $('#modal-dialog-tweet .modal-body').html(data.tweet.text);
+                    $('#modal-dialog-tweet').modal('show');
+                }
+            }
+        })
+    },
     remove_tweet: function(e) {
         e.preventDefault();
         var $this = $(this);
@@ -190,6 +208,7 @@ $(document).ready(function(){
     $(document).on('keydown', '#tweet_text', OTwitter.tweet_count_left);
     $(document).on('submit', '#new-tweet', OTwitter.new_tweet);
     $(document).on('click', '.remove-tweet', OTwitter.remove_tweet);
+    $(document).on('click', '.edit-tweet', OTwitter.edit_tweet);
     $(document).on('click', '.alert .close', OTwitter.close_alert);
     $(document).on('change', '.twitter_datepicker_type', function(){
         var type = $(this).val();
