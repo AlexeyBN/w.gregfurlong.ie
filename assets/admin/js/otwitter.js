@@ -139,6 +139,7 @@ OTwitter = {
             dataType: "json",
             data: {
                 date: startDate,
+                type: $('.tweet_type:checked').val(),
                 text: $form.find('#tweet_text').val(),
                 offset: offset,
             },
@@ -196,6 +197,9 @@ OTwitter = {
             str_length = $(this).val().length;
         $('.tweet-text-count-left').html(max_length - str_length);
     },
+    twitter_type_change: function(e){
+        $('.twitter-date-section').toggleClass('hide');
+    }
 };
 
 /**
@@ -207,6 +211,7 @@ $(document).ready(function(){
     OTwitter.single_datepicker();
     $(document).on('keydown', '#tweet_text', OTwitter.tweet_count_left);
     $(document).on('submit', '#new-tweet', OTwitter.new_tweet);
+    $(document).on('click', '.tweet_type', OTwitter.twitter_type_change);
     $(document).on('click', '.remove-tweet', OTwitter.remove_tweet);
     $(document).on('click', '.edit-tweet', OTwitter.edit_tweet);
     $(document).on('click', '.alert .close', OTwitter.close_alert);

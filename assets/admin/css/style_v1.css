@@ -3171,3 +3171,6 @@ li.dropdown:hover ul{
 .edit-tweet {
     color: #00a605;
 }
+.tweet_type {
+    height: 15px;
+}

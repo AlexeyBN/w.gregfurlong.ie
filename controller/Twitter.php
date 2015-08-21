@@ -52,11 +52,6 @@ class Twitter extends Controller{
 
     public function index(){
         $current_user       = Users_Model::get_current_user();
-
-        /*if ($current_user && $current_user->twitter_oauth_token != NULL && $current_user->twitter_oauth_token_secret != NULL) {
-            $current_user->update_token(base_url('Twitter/index'));
-        }*/
-
         $favorites          = $current_user->get_twitter_favorites();
         $retweets_of_me     = $current_user->get_retweets_of_me();
         $favorites_chart    = array('Favorites');
@@ -128,7 +123,7 @@ class Twitter extends Controller{
     }
     public function add_tweet()
     {
-        if ($this->is_ajax() && isset($_POST['date']) && isset($_POST['text']) && isset($_POST['offset'])) {
+        if ($this->is_ajax() && isset($_POST['date']) && isset($_POST['text']) && isset($_POST['offset']) && isset($_POST['type'])) {
             $errors = array();
 
             if (empty($_POST['date'])) {
@@ -140,13 +135,30 @@ class Twitter extends Controller{
 
             if (empty($errors)) {
                 $current_user       = Users_Model::get_current_user();
-                $tweet              = new Tweets_Model();
-                $tweet->user_id     = $current_user->user_id;
-                $tweet->text        = $_POST['text'];
-                $tweet->date        = strtotime($_POST['date']);
-                $tweet->offset      = $_POST['offset'];
-                $tweet->status      = Tweets_Model::STATUS_NOT_SENDED;
-                $status             = $tweet->save();
+                switch ($_POST['type']) {
+                    case Tweets_Model::TYPE_NOW:
+                        $tweet              = new Tweets_Model();
+                        $tweet->user_id     = $current_user->user_id;
+                        $tweet->text        = $_POST['text'];
+                        $tweet->date        = time();
+                        $tweet->type        = $_POST['type'];
+                        $tweet->offset      = $_POST['offset'];
+                        $tweet->status      = Tweets_Model::STATUS_SENDED;
+                        $status             = $tweet->save();
+                        $tweet->post_to();
+
+                        break;
+                    case Tweets_Model::TYPE_TIME:
+                        $tweet              = new Tweets_Model();
+                        $tweet->user_id     = $current_user->user_id;
+                        $tweet->text        = $_POST['text'];
+                        $tweet->date        = strtotime($_POST['date']);
+                        $tweet->type        = $_POST['type'];
+                        $tweet->offset      = $_POST['offset'];
+                        $tweet->status      = Tweets_Model::STATUS_NOT_SENDED;
+                        $status             = $tweet->save();
+                        break;
+                }
                 $html               = $this->load->view('twitter/_tweets_table', array('tweets' => $current_user->tweets), TRUE);
                 echo json_encode(array('status' => $status, 'html' => $html));
             } else {

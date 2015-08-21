@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 4.4.12
+-- version 4.4.10
 -- http://www.phpmyadmin.net
 --
 -- Хост: localhost
--- Время создания: Авг 20 2015 г., 17:09
+-- Время создания: Авг 21 2015 г., 12:59
 -- Версия сервера: 5.5.43-0ubuntu0.14.04.1
 -- Версия PHP: 5.5.9-1ubuntu4.11
 
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `graph` (
   `webclicks` bigint(20) DEFAULT NULL,
   `coupon` bigint(20) DEFAULT NULL,
   `date` date DEFAULT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
 
 --
 -- Дамп данных таблицы `graph`
@@ -57,7 +57,8 @@ INSERT INTO `graph` (`id`, `user_id`, `followers`, `social`, `webclicks`, `coupo
 (16, 75, 2, 10, 10, 10, '2015-08-19'),
 (17, 79, 2, 10, 10, 10, '2015-08-19'),
 (18, 79, 2, 10, 10, 10, '2015-08-20'),
-(19, 84, 2, 10, 10, 10, '2015-08-20');
+(19, 84, 2, 10, 10, 10, '2015-08-20'),
+(20, 79, 2, 10, 10, 10, '2015-08-21');
 
 -- --------------------------------------------------------
 
@@ -71,18 +72,20 @@ CREATE TABLE IF NOT EXISTS `tweets` (
   `text` text NOT NULL,
   `date` int(11) NOT NULL,
   `offset` int(11) DEFAULT NULL,
+  `type` int(11) NOT NULL DEFAULT '0',
   `status` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
 
 --
 -- Дамп данных таблицы `tweets`
 --
 
-INSERT INTO `tweets` (`id`, `user_id`, `text`, `date`, `offset`, `status`) VALUES
-(5, 75, 'asdasdasdas', 1439919600, 180, 0),
-(6, 72, 'qweqwe', 1440622800, 180, 0),
-(15, 79, 'asdasdad', 1440068760, 180, 1),
-(16, 84, 'asdasdasdasdasasd', 1439856000, 180, 0);
+INSERT INTO `tweets` (`id`, `user_id`, `text`, `date`, `offset`, `type`, `status`) VALUES
+(5, 75, 'asdasdasdas', 1439919600, 180, 0, 0),
+(6, 72, 'qweqwe', 1440622800, 180, 0, 0),
+(15, 79, 'asdasdad', 1440068760, 180, 0, 1),
+(16, 84, 'asdasdasdasdasasd', 1439856000, 180, 0, 0),
+(17, 79, 'asdasdasdasdasd', 1440150114, 180, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -139,8 +142,8 @@ INSERT INTO `users` (`user_id`, `user_key`, `first_name`, `last_name`, `email`, 
 (64, NULL, 'Test', 'Tester', 'test11@test.com', '245eb0261df514f537b429ec6061df50', NULL, NULL, NULL, NULL, 1, 'eccc4b47f08386e701a3afafde1802ae', '2015-08-13 12:01:45', NULL, NULL, NULL, NULL, NULL, 1, NULL),
 (65, NULL, 'Test', 'Tester', 'testerdev@mailinator.com', '245eb0261df514f537b429ec6061df50', NULL, NULL, NULL, NULL, 1, NULL, '2015-08-13 12:03:24', NULL, NULL, NULL, NULL, NULL, 1, NULL),
 (72, NULL, 'qwe', 'qwe', 'qwe@qwe.qwe', '76d80224611fc919a5d54f0ff9fba446', NULL, NULL, NULL, NULL, 1, NULL, '2015-05-04 02:05:45', NULL, NULL, NULL, '2449285284-D7oSOF0mNbHCuZHCCXVErwNVzIcfiQNn4XeTS9Z', 'XAUeUBITX2ZVMU299wdoyi33Y3L6Ics0roLJJjG968ZfX', 4, 'emmettogallachoir@gmail.com'),
-(79, NULL, 'GoshaSerij', 'GoshaSerij', '2449285284', '', NULL, NULL, NULL, NULL, 1, NULL, '2015-08-20 14:01:36', NULL, NULL, NULL, '2449285284-D7oSOF0mNbHCuZHCCXVErwNVzIcfiQNn4XeTS9Z', 'XAUeUBITX2ZVMU299wdoyi33Y3L6Ics0roLJJjG968ZfX', 3, NULL),
-(83, NULL, 'Gosha', 'Sery', 'vnutrr@mail.ru', '', NULL, NULL, NULL, NULL, 1, NULL, '2015-08-20 08:43:25', NULL, NULL, NULL, NULL, NULL, 5, NULL),
+(79, NULL, 'GoshaSerij', 'GoshaSerij', '2449285284', '', NULL, NULL, NULL, NULL, 1, NULL, '2015-08-21 12:14:01', NULL, NULL, NULL, '2449285284-D7oSOF0mNbHCuZHCCXVErwNVzIcfiQNn4XeTS9Z', 'XAUeUBITX2ZVMU299wdoyi33Y3L6Ics0roLJJjG968ZfX', 3, NULL),
+(83, NULL, 'Gosha', 'Sery', 'vnutrr@mail.ru', '', NULL, NULL, NULL, NULL, 1, NULL, '2015-08-21 10:56:29', NULL, NULL, NULL, NULL, NULL, 5, NULL),
 (84, NULL, 'devua31', 'devua31', '3367402498', '', NULL, NULL, NULL, NULL, 1, NULL, '2015-08-20 15:26:00', NULL, NULL, NULL, 'rrrrr3367402498-9pcAa4VqwArDe9Tl2rtWMr1vgp39pTjAjZ9B9QA', 'MBtylUNIuBTHpTYP0D7CZG3j8p7vziPOnAxqoYSDxT5IX', 3, NULL);
 
 -- --------------------------------------------------------
@@ -154,7 +157,7 @@ CREATE TABLE IF NOT EXISTS `user_meta` (
   `user_id` bigint(20) DEFAULT NULL,
   `meta_key` varchar(255) DEFAULT NULL,
   `meta_value` longtext
-) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=latin1;
 
 --
 -- Дамп данных таблицы `user_meta`
@@ -184,12 +187,16 @@ INSERT INTO `user_meta` (`id`, `user_id`, `meta_key`, `meta_value`) VALUES
 (47, 70, 'social_id', '3384532955'),
 (65, 79, 'social_type', 'twitter'),
 (66, 79, 'social_id', '2449285284'),
-(67, 79, 'twitter_meta', 'O:8:"stdClass":42:{s:2:"id";i:2449285284;s:6:"id_str";s:10:"2449285284";s:4:"name";s:19:"Ð“Ð¾ÑˆÐ° Ð¡ÐµÑ€Ñ‹Ð¹";s:11:"screen_name";s:10:"GoshaSerij";s:8:"location";s:0:"";s:11:"description";s:0:"";s:3:"url";N;s:8:"entities";O:8:"stdClass":1:{s:11:"description";O:8:"stdClass":1:{s:4:"urls";a:0:{}}}s:9:"protected";b:0;s:15:"followers_count";i:2;s:13:"friends_count";i:14;s:12:"listed_count";i:0;s:10:"created_at";s:30:"Thu Apr 17 07:55:53 +0000 2014";s:16:"favourites_count";i:1;s:10:"utc_offset";i:-25200;s:9:"time_zone";s:26:"Pacific Time (US & Canada)";s:11:"geo_enabled";b:0;s:8:"verified";b:0;s:14:"statuses_count";i:18;s:4:"lang";s:2:"ru";s:6:"status";O:8:"stdClass":22:{s:10:"created_at";s:30:"Thu Aug 20 11:01:20 +0000 2015";s:2:"id";i:634319296760541184;s:6:"id_str";s:18:"634319296760541184";s:4:"text";s:27:"RT @devua31: one more tweet";s:6:"source";s:66:"<a href="http://twitter.com" rel="nofollow">Twitter Web Client</a>";s:9:"truncated";b:0;s:21:"in_reply_to_status_id";N;s:25:"in_reply_to_status_id_str";N;s:19:"in_reply_to_user_id";N;s:23:"in_reply_to_user_id_str";N;s:23:"in_reply_to_screen_name";N;s:3:"geo";N;s:11:"coordinates";N;s:5:"place";N;s:12:"contributors";N;s:16:"retweeted_status";O:8:"stdClass":21:{s:10:"created_at";s:30:"Thu Aug 20 11:00:31 +0000 2015";s:2:"id";i:634319092900564992;s:6:"id_str";s:18:"634319092900564992";s:4:"text";s:14:"one more tweet";s:6:"source";s:66:"<a href="http://twitter.com" rel="nofollow">Twitter Web Client</a>";s:9:"truncated";b:0;s:21:"in_reply_to_status_id";N;s:25:"in_reply_to_status_id_str";N;s:19:"in_reply_to_user_id";N;s:23:"in_reply_to_user_id_str";N;s:23:"in_reply_to_screen_name";N;s:3:"geo";N;s:11:"coordinates";N;s:5:"place";N;s:12:"contributors";N;s:13:"retweet_count";i:1;s:14:"favorite_count";i:0;s:8:"entities";O:8:"stdClass":4:{s:8:"hashtags";a:0:{}s:7:"symbols";a:0:{}s:13:"user_mentions";a:0:{}s:4:"urls";a:0:{}}s:9:"favorited";b:0;s:9:"retweeted";b:1;s:4:"lang";s:2:"en";}s:13:"retweet_count";i:1;s:14:"favorite_count";i:0;s:8:"entities";O:8:"stdClass":4:{s:8:"hashtags";a:0:{}s:7:"symbols";a:0:{}s:13:"user_mentions";a:1:{i:0;O:8:"stdClass":5:{s:11:"screen_name";s:7:"devua31";s:4:"name";s:6:"dev 31";s:2:"id";i:3367402498;s:6:"id_str";s:10:"3367402498";s:7:"indices";a:2:{i:0;i:3;i:1;i:11;}}}s:4:"urls";a:0:{}}s:9:"favorited";b:0;s:9:"retweeted";b:1;s:4:"lang";s:2:"en";}s:20:"contributors_enabled";b:0;s:13:"is_translator";b:0;s:22:"is_translation_enabled";b:0;s:24:"profile_background_color";s:6:"C0DEED";s:28:"profile_background_image_url";s:48:"http://abs.twimg.com/images/themes/theme1/bg.png";s:34:"profile_background_image_url_https";s:49:"https://abs.twimg.com/images/themes/theme1/bg.png";s:23:"profile_background_tile";b:0;s:17:"profile_image_url";s:74:"http://pbs.twimg.com/profile_images/632101586441900033/gFvVra6P_normal.jpg";s:23:"profile_image_url_https";s:75:"https://pbs.twimg.com/profile_images/632101586441900033/gFvVra6P_normal.jpg";s:18:"profile_banner_url";s:59:"https://pbs.twimg.com/profile_banners/2449285284/1439539753";s:18:"profile_link_color";s:6:"0084B4";s:28:"profile_sidebar_border_color";s:6:"C0DEED";s:26:"profile_sidebar_fill_color";s:6:"DDEEF6";s:18:"profile_text_color";s:6:"333333";s:28:"profile_use_background_image";b:1;s:20:"has_extended_profile";b:0;s:15:"default_profile";b:1;s:21:"default_profile_image";b:0;s:9:"following";b:0;s:19:"follow_request_sent";b:0;s:13:"notifications";b:0;}'),
-(68, 83, 'social_type', 'facebook'),
+(67, 79, 'twitter_meta', 'O:8:"stdClass":42:{s:2:"id";i:2449285284;s:6:"id_str";s:10:"2449285284";s:4:"name";s:19:"Ð“Ð¾ÑˆÐ° Ð¡ÐµÑ€Ñ‹Ð¹";s:11:"screen_name";s:10:"GoshaSerij";s:8:"location";s:0:"";s:11:"description";s:0:"";s:3:"url";N;s:8:"entities";O:8:"stdClass":1:{s:11:"description";O:8:"stdClass":1:{s:4:"urls";a:0:{}}}s:9:"protected";b:0;s:15:"followers_count";i:2;s:13:"friends_count";i:14;s:12:"listed_count";i:0;s:10:"created_at";s:30:"Thu Apr 17 07:55:53 +0000 2014";s:16:"favourites_count";i:1;s:10:"utc_offset";i:-25200;s:9:"time_zone";s:26:"Pacific Time (US & Canada)";s:11:"geo_enabled";b:0;s:8:"verified";b:0;s:14:"statuses_count";i:20;s:4:"lang";s:2:"ru";s:6:"status";O:8:"stdClass":21:{s:10:"created_at";s:30:"Thu Aug 20 13:36:22 +0000 2015";s:2:"id";i:634358314118303744;s:6:"id_str";s:18:"634358314118303744";s:4:"text";s:8:"asdasdad";s:6:"source";s:61:"<a href="http://w.gregfurlong.ie/" rel="nofollow">Warbble</a>";s:9:"truncated";b:0;s:21:"in_reply_to_status_id";N;s:25:"in_reply_to_status_id_str";N;s:19:"in_reply_to_user_id";N;s:23:"in_reply_to_user_id_str";N;s:23:"in_reply_to_screen_name";N;s:3:"geo";N;s:11:"coordinates";N;s:5:"place";N;s:12:"contributors";N;s:13:"retweet_count";i:0;s:14:"favorite_count";i:0;s:8:"entities";O:8:"stdClass":4:{s:8:"hashtags";a:0:{}s:7:"symbols";a:0:{}s:13:"user_mentions";a:0:{}s:4:"urls";a:0:{}}s:9:"favorited";b:0;s:9:"retweeted";b:0;s:4:"lang";s:2:"en";}s:20:"contributors_enabled";b:0;s:13:"is_translator";b:0;s:22:"is_translation_enabled";b:0;s:24:"profile_background_color";s:6:"C0DEED";s:28:"profile_background_image_url";s:48:"http://abs.twimg.com/images/themes/theme1/bg.png";s:34:"profile_background_image_url_https";s:49:"https://abs.twimg.com/images/themes/theme1/bg.png";s:23:"profile_background_tile";b:0;s:17:"profile_image_url";s:74:"http://pbs.twimg.com/profile_images/632101586441900033/gFvVra6P_normal.jpg";s:23:"profile_image_url_https";s:75:"https://pbs.twimg.com/profile_images/632101586441900033/gFvVra6P_normal.jpg";s:18:"profile_banner_url";s:59:"https://pbs.twimg.com/profile_banners/2449285284/1439539753";s:18:"profile_link_color";s:6:"0084B4";s:28:"profile_sidebar_border_color";s:6:"C0DEED";s:26:"profile_sidebar_fill_color";s:6:"DDEEF6";s:18:"profile_text_color";s:6:"333333";s:28:"profile_use_background_image";b:1;s:20:"has_extended_profile";b:0;s:15:"default_profile";b:1;s:21:"default_profile_image";b:0;s:9:"following";b:0;s:19:"follow_request_sent";b:0;s:13:"notifications";b:0;}'),
 (69, 83, 'social_id', '1637150986523247'),
 (70, 84, 'social_type', 'twitter'),
 (71, 84, 'social_id', '3367402498'),
-(72, 84, 'twitter_meta', 'O:8:"stdClass":41:{s:2:"id";i:3367402498;s:6:"id_str";s:10:"3367402498";s:4:"name";s:6:"dev 31";s:11:"screen_name";s:7:"devua31";s:8:"location";s:0:"";s:11:"description";s:0:"";s:3:"url";N;s:8:"entities";O:8:"stdClass":1:{s:11:"description";O:8:"stdClass":1:{s:4:"urls";a:0:{}}}s:9:"protected";b:0;s:15:"followers_count";i:2;s:13:"friends_count";i:42;s:12:"listed_count";i:0;s:10:"created_at";s:30:"Thu Jul 09 09:12:44 +0000 2015";s:16:"favourites_count";i:0;s:10:"utc_offset";i:-25200;s:9:"time_zone";s:26:"Pacific Time (US & Canada)";s:11:"geo_enabled";b:0;s:8:"verified";b:0;s:14:"statuses_count";i:11;s:4:"lang";s:2:"ru";s:6:"status";O:8:"stdClass":21:{s:10:"created_at";s:30:"Thu Aug 20 11:25:01 +0000 2015";s:2:"id";i:634325258544279552;s:6:"id_str";s:18:"634325258544279552";s:4:"text";s:18:"I''m going to lanch";s:6:"source";s:61:"<a href="http://w.gregfurlong.ie/" rel="nofollow">Warbble</a>";s:9:"truncated";b:0;s:21:"in_reply_to_status_id";N;s:25:"in_reply_to_status_id_str";N;s:19:"in_reply_to_user_id";N;s:23:"in_reply_to_user_id_str";N;s:23:"in_reply_to_screen_name";N;s:3:"geo";N;s:11:"coordinates";N;s:5:"place";N;s:12:"contributors";N;s:13:"retweet_count";i:0;s:14:"favorite_count";i:0;s:8:"entities";O:8:"stdClass":4:{s:8:"hashtags";a:0:{}s:7:"symbols";a:0:{}s:13:"user_mentions";a:0:{}s:4:"urls";a:0:{}}s:9:"favorited";b:0;s:9:"retweeted";b:0;s:4:"lang";s:2:"en";}s:20:"contributors_enabled";b:0;s:13:"is_translator";b:0;s:22:"is_translation_enabled";b:1;s:24:"profile_background_color";s:6:"C0DEED";s:28:"profile_background_image_url";s:48:"http://abs.twimg.com/images/themes/theme1/bg.png";s:34:"profile_background_image_url_https";s:49:"https://abs.twimg.com/images/themes/theme1/bg.png";s:23:"profile_background_tile";b:0;s:17:"profile_image_url";s:74:"http://pbs.twimg.com/profile_images/619074350495350784/7EmEve1n_normal.png";s:23:"profile_image_url_https";s:75:"https://pbs.twimg.com/profile_images/619074350495350784/7EmEve1n_normal.png";s:18:"profile_link_color";s:6:"0084B4";s:28:"profile_sidebar_border_color";s:6:"C0DEED";s:26:"profile_sidebar_fill_color";s:6:"DDEEF6";s:18:"profile_text_color";s:6:"333333";s:28:"profile_use_background_image";b:1;s:20:"has_extended_profile";b:0;s:15:"default_profile";b:1;s:21:"default_profile_image";b:0;s:9:"following";b:0;s:19:"follow_request_sent";b:0;s:13:"notifications";b:0;}');
+(72, 84, 'twitter_meta', 'O:8:"stdClass":41:{s:2:"id";i:3367402498;s:6:"id_str";s:10:"3367402498";s:4:"name";s:6:"dev 31";s:11:"screen_name";s:7:"devua31";s:8:"location";s:0:"";s:11:"description";s:0:"";s:3:"url";N;s:8:"entities";O:8:"stdClass":1:{s:11:"description";O:8:"stdClass":1:{s:4:"urls";a:0:{}}}s:9:"protected";b:0;s:15:"followers_count";i:2;s:13:"friends_count";i:42;s:12:"listed_count";i:0;s:10:"created_at";s:30:"Thu Jul 09 09:12:44 +0000 2015";s:16:"favourites_count";i:0;s:10:"utc_offset";i:-25200;s:9:"time_zone";s:26:"Pacific Time (US & Canada)";s:11:"geo_enabled";b:0;s:8:"verified";b:0;s:14:"statuses_count";i:11;s:4:"lang";s:2:"ru";s:6:"status";O:8:"stdClass":21:{s:10:"created_at";s:30:"Thu Aug 20 11:25:01 +0000 2015";s:2:"id";i:634325258544279552;s:6:"id_str";s:18:"634325258544279552";s:4:"text";s:18:"I''m going to lanch";s:6:"source";s:61:"<a href="http://w.gregfurlong.ie/" rel="nofollow">Warbble</a>";s:9:"truncated";b:0;s:21:"in_reply_to_status_id";N;s:25:"in_reply_to_status_id_str";N;s:19:"in_reply_to_user_id";N;s:23:"in_reply_to_user_id_str";N;s:23:"in_reply_to_screen_name";N;s:3:"geo";N;s:11:"coordinates";N;s:5:"place";N;s:12:"contributors";N;s:13:"retweet_count";i:0;s:14:"favorite_count";i:0;s:8:"entities";O:8:"stdClass":4:{s:8:"hashtags";a:0:{}s:7:"symbols";a:0:{}s:13:"user_mentions";a:0:{}s:4:"urls";a:0:{}}s:9:"favorited";b:0;s:9:"retweeted";b:0;s:4:"lang";s:2:"en";}s:20:"contributors_enabled";b:0;s:13:"is_translator";b:0;s:22:"is_translation_enabled";b:1;s:24:"profile_background_color";s:6:"C0DEED";s:28:"profile_background_image_url";s:48:"http://abs.twimg.com/images/themes/theme1/bg.png";s:34:"profile_background_image_url_https";s:49:"https://abs.twimg.com/images/themes/theme1/bg.png";s:23:"profile_background_tile";b:0;s:17:"profile_image_url";s:74:"http://pbs.twimg.com/profile_images/619074350495350784/7EmEve1n_normal.png";s:23:"profile_image_url_https";s:75:"https://pbs.twimg.com/profile_images/619074350495350784/7EmEve1n_normal.png";s:18:"profile_link_color";s:6:"0084B4";s:28:"profile_sidebar_border_color";s:6:"C0DEED";s:26:"profile_sidebar_fill_color";s:6:"DDEEF6";s:18:"profile_text_color";s:6:"333333";s:28:"profile_use_background_image";b:1;s:20:"has_extended_profile";b:0;s:15:"default_profile";b:1;s:21:"default_profile_image";b:0;s:9:"following";b:0;s:19:"follow_request_sent";b:0;s:13:"notifications";b:0;}'),
+(73, 83, 'facebook_user_token', 'CAAU9EhVLn3cBANwzcMJOZC9xmhtA4lXY9fw439uMLdwZC4Ova0W3bQ2zD7mMwxUJi1n5mwINsx0fKZBnBNvDlIpf0jQLPzwBXMpxwj9q4jwCxUP6vSBerdE7hVaWRLiRvexCEAczEWsTLFSKrM7k3eJ1j4oSY9L1cCy6AJWQT7f7YhzkjSJP2YyoxdiZCZBQZD'),
+(74, 83, 'facebook_page_token', ''),
+(75, 83, 'facebook_user_token', 'CAAU9EhVLn3cBANp2tZCeo90WhKUXJpTQ6sijcZBGv1U7DsglNobrwmahlXRkttjQ39OMdQLZBVhTV7WblGlhsa8Bp27JhcLD44XFgQlbgqftIQ9GMlmHBNyPACnSu7MN4gJxc9w2llXGtMqkaYtfRG9oT3kHujnZAQy4w4utmdOLuGfBtoje'),
+(76, 83, 'facebook_page_token', ''),
+(77, 83, 'facebook_user_token', 'CAAU9EhVLn3cBAPrXixj9A4dJvuRdnlJgbOb5UwJpHy0VYrJlkW0KroDxVVA5oMFBbkbpeerBE8JWOvxLE4dqyP79GZCTF0OzPhUsCodjoL403Uq3ztndX68QrXc5nRipa8jQj0DkmfkcKd3ZBpxU0AltUu5qL8sn8fTS5ZCiQutdDe0ORzB');
 
 --
 -- Индексы сохранённых таблиц
@@ -229,12 +236,12 @@ ALTER TABLE `user_meta`
 -- AUTO_INCREMENT для таблицы `graph`
 --
 ALTER TABLE `graph`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=20;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=21;
 --
 -- AUTO_INCREMENT для таблицы `tweets`
 --
 ALTER TABLE `tweets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=18;
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
@@ -244,7 +251,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `user_meta`
 --
 ALTER TABLE `user_meta`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=73;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=78;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

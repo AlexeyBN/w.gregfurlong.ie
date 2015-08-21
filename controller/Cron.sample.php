@@ -24,7 +24,8 @@ class Cron
     public function post_tweets()
     {
         $tweets = Tweets_Model::find('all', array(
-            'status' => false,
+            'status' => Tweets_Model::STATUS_NOT_SENDED,
+            'type'   => Tweets_Model::TYPE_TIME,
         ));
         foreach ($tweets as $tweet) {
             if (time() + $tweet->offset * 60 > $tweet->date && $tweet->status == Tweets_Model::STATUS_NOT_SENDED) {

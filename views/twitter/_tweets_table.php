@@ -17,7 +17,7 @@
                         <a href="#" data-id="<?php echo $tweet->id ?>" class="edit-tweet">
                             <span class="glyphicon glyphicon-pencil"></span>
                         </a>
-                        <?php if ($tweet->status != Tweets_Model::STATUS_SENDED): ?>
+                        <?php if (($tweet->date < time() + $tweet->offset * 60) && $tweet->status != Tweets_Model::STATUS_SENDED): ?>
                             <a href="#" data-id="<?php echo $tweet->id ?>" class="remove-tweet">
                                 <span class="glyphicon glyphicon-remove"></span>
                             </a>

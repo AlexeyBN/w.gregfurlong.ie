@@ -56,6 +56,18 @@
                 <h2>Tweets</h2>
                 <form id="new-tweet" role="form">
                     <div class="form-group">
+                        <label for="tweet_type">
+                            Now
+                            <input checked type="radio" name="tweet[type]" value="<?php echo Tweets_Model::TYPE_NOW ?>" class="form-control tweet_type">
+                        </label>
+
+                        <label for="tweet_type">
+                            Time
+                            <input type="radio" name="tweet[type]" value="<?php echo Tweets_Model::TYPE_TIME ?>" class="form-control tweet_type">
+                        </label>
+
+                    </div>
+                    <div class="form-group twitter-date-section hide">
                         <label for="tweet_date">Date</label>
                         <input type="text" name="tweet[date]" id="tweet_date" class="form-control single-datepiker">
                     </div>
@@ -70,6 +82,7 @@
         </div>
         <div class="col-xs-12 col-md-6 last-col margin-top-25">
             <div class="col-inner section tweets-table">
+                <?php $t=$current_user->tweets ?>
                 <?php $this->view('twitter/_tweets_table', array(
                     'tweets' => $current_user->tweets
                 )) ?>
