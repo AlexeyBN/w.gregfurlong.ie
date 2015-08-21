@@ -43,13 +43,14 @@
 
                 <div class="facebook-chart-info">
                     <?php echo $this->view('facebook/_facebook_chart', array(
-                        'post_chart'   => $post_chart,
+                        'post_chart'        => $post_chart,
+                        'likes_chart'       => $likes_chart,
                         'chart_categories'  => $chart_categories,
                         'startDate'         => $startDate,
                         'endDate'           => $endDate,
                     ), TRUE) ?>
                 </div>
-                <div id="facebook_chart" data-columns='[<?php echo json_encode($post_chart) ?>]' data-categories='<?php echo json_encode($chart_categories) ?>'></div>
+                <div id="facebook_chart" data-columns='[<?php echo json_encode($post_chart) ?>, <?php echo json_encode($likes_chart) ?>]' data-categories='<?php echo json_encode($chart_categories) ?>'></div>
             </div>
         </div>
         <div class="col-xs-12 col-md-6 first-col margin-top-25">

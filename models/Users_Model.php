@@ -252,6 +252,27 @@ class Users_Model extends ActiveRecord\Model{
         return false;
     }
 
+    static function get_facebook_likes()
+    {
+        if (self::is_loged_in() && self::is_facebook_account()) {
+
+            FacebookSession::enableAppSecretProof(false);
+            $current_user = self::get_current_user();
+            $facebook_user_token = $current_user->get_usermeta('facebook_user_token');
+            $longLivedAccessToken = new AccessToken($facebook_user_token->meta_value);
+            $session = new FacebookSession($longLivedAccessToken);
+
+            $request = new FacebookRequest(
+                $session,
+                'GET',
+                '/me?fields=likes'
+            );
+            $return = $request->execute()->getGraphObject()->asArray();
+            return array_key_exists('likes', $return) ? $return['likes']: array('data' => array());
+        }
+        return false;
+    }
+
     static function create_facebook_account($redirect_url)
     {
         $response = array(

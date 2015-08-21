@@ -16,6 +16,7 @@ OFacebook  = {
                 columns: columns,
                 colors: {
                     Posts: '#59c2e6',
+                    Likes: '#4bcf99',
                 },
             },
             axis : {
@@ -26,6 +27,30 @@ OFacebook  = {
                 y : {}
             }
         });
+    },
+    update_graph: function(startDate, endDate) {
+        var overlay = false;
+        $('#facebook_chart').append(overlay = $('<div class="background-overlay"></div>'))
+        $('.facebook_datepicker').attr({disabled: true});
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            data: {
+                startDate: startDate,
+                endDate: endDate
+            },
+            success: function(data){
+                overlay.remove();
+                $('.facebook_datepicker').attr({disabled: false});
+                if (data.status) {
+                    $('.facebook-chart-info').html(data.html)
+                    OFacebook.chart([
+                        data.post_chart,
+                        data.likes_chart,
+                    ], data.chart_categories);
+                }
+            }
+        })
     },
     /**
      * Datepicker
@@ -57,13 +82,13 @@ OFacebook  = {
             }
         );
         $('.facebook_datepicker').on('showCalendar.daterangepicker', function(ev, picker) {
-            if (!$('.facebook_datepicker_dropdown .ranges + .facebook_datepicker_type').length) {
+            if (!$('.facebook_datepicker_dropdown .dropdown-menu .facebook_datepicker_type').length) {
                 var single = $('.facebook_datepicker').data('daterangepicker').singleDatePicker;
 
-                $('.facebook_datepicker_dropdown .ranges').after('<select class="form-control facebook_datepicker_type">\
-                                                                        <option '+(single? '': 'selected')+' value="range">Range</option>\
-                                                                        <option '+(single? 'selected': '')+' value="single">Single</option>\
-                                                                  </select>');
+                $('.facebook_datepicker_dropdown .calendar.left').before('<select class="form-control facebook_datepicker_type">\
+                                                                                <option '+(single? '': 'selected')+' value="range">Range</option>\
+                                                                                <option '+(single? 'selected': '')+' value="single">Single</option>\
+                                                                          </select>');
             }
 
         });
