@@ -4,7 +4,6 @@
     <!-- Table -->
     <table class="table">
         <tr>
-            <th>ID</th>
             <th>Date</th>
             <th>Status</th>
             <th>Action</th>
@@ -12,12 +11,16 @@
         <?php if(!empty($tweets)): ?>
             <?php foreach ($tweets as $tweet): ?>
                 <tr>
-                    <td><?php echo $tweet->id ?></td>
                     <td><?php echo date('h:i:s A \o\n d/m/y', $tweet->date) ?></td>
-                    <td><?php echo $tweet->is_posted? "Posted": "Not Yet" ?></td>
+                    <td><?php echo $tweet->status == Tweets_Model::STATUS_SENDED? "Posted": "Not Yet" ?></td>
                     <td>
-                        <?php if (!$tweet->is_posted): ?>
-                            <button data-id="<?php echo $tweet->id ?>" type="button" class="btn btn-danger remove-tweet">Delete</span></button>
+                        <a href="#" data-id="<?php echo $tweet->id ?>" class="edit-tweet">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                        <?php if ($tweet->status != Tweets_Model::STATUS_SENDED): ?>
+                            <a href="#" data-id="<?php echo $tweet->id ?>" class="remove-tweet">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </a>
                         <?php endif; ?>
                     </td>
                 </tr>
@@ -28,4 +31,19 @@
             </tr>
         <?php endif; ?>
     </table>
+
+    <div class="modal fade" id="modal-dialog-tweet" tabindex="-1" role="dialog" aria-labelledby="View tweet">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">View tweet</h4>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>

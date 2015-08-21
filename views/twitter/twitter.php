@@ -62,6 +62,7 @@
                     <div class="form-group">
                         <label for="tweet_text">Tweet Text</label>
                         <textarea name="tweet[text]" id="tweet_text" maxlength="140" class="form-control"></textarea>
+                        <p class="tweet-text-count-left">140</p>
                     </div>
                     <button type="submit" class="btn btn-default">Tweet</button>
                 </form>

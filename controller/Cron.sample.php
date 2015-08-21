@@ -13,26 +13,46 @@ class Cron
 
     public function __construct()
     {
-        require_once $this->path . "includes/plugins/twitter/twitteroauth.php";
-        require_once $this->path . "helpers/config_helper.php";
         require_once $this->path . "load.php";
+        require_once $this->path . "includes/plugins/twitter/twitteroauth.php";
+        require_once $this->path . "libraries/Swiftmailer.php";
+        require_once $this->path . "helpers/config_helper.php";
         require_once $this->path . "models/Tweets_Model.php";
         require_once $this->path . "models/Users_Model.php";
     }
 
     public function post_tweets()
     {
-
         $tweets = Tweets_Model::find('all', array(
-            'is_posted' => false,
+            'status' => false,
         ));
-
         foreach ($tweets as $tweet) {
-            if (time() + $tweet->offset * 60 > $tweet->date) {
+            if (time() + $tweet->offset * 60 > $tweet->date && $tweet->status == Tweets_Model::STATUS_NOT_SENDED) {
+
                 $status = $this->post_to($tweet);
                 if (isset($status->id) && $status->id > 0) {
-                    $tweet->is_posted = true;
+                    $tweet->status = Tweets_Model::STATUS_SENDED;
                     $tweet->save();
+                } else {
+                    $current_user = $tweet->user;
+
+                    if ($current_user) {
+                        $recipients = array();
+                        $email_config = get_config('swiftmailer');
+
+                        if (filter_var($current_user->email, FILTER_VALIDATE_EMAIL) !== FALSE) {
+                            $recipients[] = $current_user->email;
+                        }
+                        $recipients[] = $email_config['support'];
+
+                        $mailer = new Swiftmailer();
+                        $mailer->send('Warbble notification', array(
+                            'email' => 'support@w.gregfurlong.ie',
+                            'title' => 'Support',
+                        ), $recipients, $mailer->get_html_tweet_message($tweet, $this->path));
+                        $tweet->status = Tweets_Model::STATUS_FILED;
+                        $tweet->save();
+                    }
                 }
             }
         }
@@ -55,6 +75,7 @@ class Cron
             $status = $connection->post('statuses/update', array(
                 'status'       => $tweet->text,
             ));
+
             return $status;
         }
         return false;

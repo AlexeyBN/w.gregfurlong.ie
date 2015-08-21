@@ -53,7 +53,7 @@ class Twitter extends Controller{
     public function index(){
         $current_user       = Users_Model::get_current_user();
         $favorites          = $current_user->get_twitter_favorites();
-        $tweets             = $current_user->get_all_tweets();
+        $retweets_of_me     = $current_user->get_retweets_of_me();
         $favorites_chart    = array('Favorites');
         $retweets_chart     = array('Retweets');
         $favorites_count    = 0;
@@ -80,10 +80,10 @@ class Twitter extends Controller{
                 }
             }
             // Retweets
-            foreach ($tweets as $tweet) {
-                if (date('Y-m-d', strtotime($tweet->created_at)) == date('Y-m-d', $date_start)) {
-                    $retweets_chart[$index] += $tweet->retweet_count;
-                    $retweets_count += $tweet->retweet_count;
+            foreach ($retweets_of_me as $retweet) {
+                if (date('Y-m-d', strtotime($retweet->created_at)) == date('Y-m-d', $date_start)) {
+                    $retweets_chart[$index] += $retweet->retweet_count;
+                    $retweets_count += $retweet->retweet_count;
                 }
             }
             $date_start = strtotime('+1 day', $date_start);
@@ -140,7 +140,7 @@ class Twitter extends Controller{
                 $tweet->text        = $_POST['text'];
                 $tweet->date        = strtotime($_POST['date']);
                 $tweet->offset      = $_POST['offset'];
-                $tweet->is_posted   = false;
+                $tweet->status      = Tweets_Model::STATUS_NOT_SENDED;
                 $status             = $tweet->save();
                 $html               = $this->load->view('twitter/_tweets_table', array('tweets' => $current_user->tweets), TRUE);
                 echo json_encode(array('status' => $status, 'html' => $html));
@@ -161,6 +161,21 @@ class Twitter extends Controller{
                 $tweet->delete();
                 $html = $this->load->view('twitter/_tweets_table', array('tweets' => $current_user->tweets), TRUE);
                 echo json_encode(array('status' => true, 'html' => $html));
+            } else {
+                echo json_encode(array('status' => false));
+            }
+        }
+        exit;
+    }
+
+    public function edit_tweet()
+    {
+        if ($this->is_ajax() && isset($_POST['id'])) {
+            $current_user       = Users_Model::get_current_user();
+            $tweet              = Tweets_Model::first(array('id' => $_POST['id']));
+
+            if ($tweet && $tweet->user_id == $current_user->user_id) {
+                echo json_encode(array('status' => true, 'tweet' => $tweet->attributes()));
             } else {
                 echo json_encode(array('status' => false));
             }

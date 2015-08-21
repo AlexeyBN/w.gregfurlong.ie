@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: localhost
--- Время создания: Авг 18 2015 г., 20:29
+-- Время создания: Авг 20 2015 г., 17:09
 -- Версия сервера: 5.5.43-0ubuntu0.14.04.1
 -- Версия PHP: 5.5.9-1ubuntu4.11
 
@@ -32,17 +32,18 @@ CREATE TABLE IF NOT EXISTS `tweets` (
   `text` text NOT NULL,
   `date` int(11) NOT NULL,
   `offset` int(11) DEFAULT NULL,
-  `is_posted` tinyint(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+  `status` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 
 --
 -- Дамп данных таблицы `tweets`
 --
 
-INSERT INTO `tweets` (`id`, `user_id`, `text`, `date`, `offset`, `is_posted`) VALUES
-(1, 75, 'asdasdadadasdasdasd', 1439926200, NULL, 0),
-(3, 75, 'asdads', 1439928237, NULL, 0),
-(4, 75, 'dfsfddsffdsfsfsfd', 1440021600, NULL, 0);
+INSERT INTO `tweets` (`id`, `user_id`, `text`, `date`, `offset`, `status`) VALUES
+(5, 75, 'asdasdasdas', 1439919600, 180, 0),
+(6, 72, 'qweqwe', 1440622800, 180, 0),
+(15, 79, 'asdasdad', 1440068760, 180, 1),
+(16, 84, 'asdasdasdasdasasd', 1439856000, 180, 0);
 
 --
 -- Индексы сохранённых таблиц
@@ -62,7 +63,7 @@ ALTER TABLE `tweets`
 -- AUTO_INCREMENT для таблицы `tweets`
 --
 ALTER TABLE `tweets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=17;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
