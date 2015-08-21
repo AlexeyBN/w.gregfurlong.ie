@@ -14,6 +14,7 @@
         <script src="<?php echo $base_url; ?>assets/<?php echo $script['type'] . '/js/' . $script['file'] ?>"></script>
         <?php endif; ?>
     <?php endforeach; ?>
+<script src="<?php echo $base_url; ?>assets/admin/js/global.js"></script>
 <div class="alerts-container"></div>
 </body>
 </html>

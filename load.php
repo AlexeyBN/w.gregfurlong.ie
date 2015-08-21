@@ -2,6 +2,7 @@
 require_once "core/Common.php";
 require_once "config.php";
 require_once 'includes/plugins/php-activerecord/ActiveRecord.php';
+//require_once 'core/B_Model.php';
 
 ActiveRecord\Config::initialize(function ($cfg) {
     $cfg->set_model_directory(ABSPATH.'models');

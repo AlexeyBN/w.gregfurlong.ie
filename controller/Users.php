@@ -12,30 +12,6 @@
 
  */
 
-//require 'functions.php';
-
-use Facebook\FacebookSession;
-
-use Facebook\FacebookRedirectLoginHelper;
-
-use Facebook\FacebookRequest;
-
-use Facebook\FacebookResponse;
-
-use Facebook\FacebookSDKException;
-
-use Facebook\FacebookRequestException;
-
-use Facebook\FacebookAuthorizationException;
-
-use Facebook\GraphObject;
-
-use Facebook\Entities\AccessToken;
-
-use Facebook\HttpClients\FacebookCurlHttpClient;
-
-use Facebook\HttpClients\FacebookHttpable;
-
 class Users extends Controller{
 
     public $hybridauth;
@@ -46,15 +22,10 @@ class Users extends Controller{
 
         // init app with app id and secret
 
-        FacebookSession::setDefaultApplication( '638909079579449','d4066e645f9db3d0fa962f0c6e0096c7' );
+        //$config_file_path = ABSPATH.'includes/plugins/hybridauth/config.php';
 
-        $config_file_path = ABSPATH.'includes/plugins/hybridauth/config.php';
-
-
-
-        require_once( ABSPATH.'includes/plugins/twitter/OAuth.php' );
-
-        require_once( ABSPATH.'includes/plugins/twitter/twitteroauth.php' );
+        //require_once( ABSPATH.'includes/plugins/twitter/OAuth.php' );
+        //require_once( ABSPATH.'includes/plugins/twitter/twitteroauth.php' );
 
 
 
@@ -92,139 +63,17 @@ class Users extends Controller{
             switch( $social ){
 
                 case "facebook":
-
-                    $helper = new FacebookRedirectLoginHelper(base_url('login/facebook'));
-
-                    $session = $helper->getSessionFromRedirect();
-
-                    $userdata = $this->session->userdata('check_login');
-
-                    if ( isset( $session ) && $userdata ) {
-
-                        // graph api request for user data
-
-                        $request = new FacebookRequest( $session, 'GET', '/me' );
-
-                        $response = $request->execute();
-
-                        // get response
-
-                        $graphObject = $response->getGraphObject();
-
-                        $user = Users_Model::find_by_email($graphObject->getProperty('email'));
-
-                        if(sizeof($user)<=0){
-
-                            $user = new Users_Model();
-
-                        }
-
-                        $user->first_name = $graphObject->getProperty('first_name');
-
-                        $user->last_name = $graphObject->getProperty('last_name');
-
-                        $user->email = $graphObject->getProperty('email');
-
-                        $user->registration_date = date("Y-m-d H:i:s");
-
-                        $user->save();
-
-                        /**
-
-                         * Update social meta key
-
-                         */
-
-                        $UserMeta = Usermetum::find_by_user_id_and_meta_key_and_meta_value( $user->user_id,'social_type','facebook');
-
-                        if( sizeof($UserMeta)<=0){
-
-                            $UserMeta = new Usermetum();
-
-                        }
-
-                        $UserMeta->user_id = $user->user_id;
-
-                        $UserMeta->meta_key = 'social_type';
-
-                        $UserMeta->meta_value = 'facebook';
-
-                        $UserMeta->save();
-
-
-
-                        /**
-
-                         * Update social meta value
-
-                         */
-
-
-
-                        $UserMeta = Usermetum::find_by_user_id_and_meta_key_and_meta_value( $user->user_id,'social_id',$graphObject->getProperty('id') );
-
-                        if( sizeof($UserMeta)<=0){
-
-                            $UserMeta = new Usermetum();
-
-                        }
-
-                        $UserMeta->user_id = $user->user_id;
-
-                        $UserMeta->meta_key = 'social_id';
-
-                        $UserMeta->meta_value = $graphObject->getProperty('id');
-
-                        $UserMeta->save();
-
-                        // see if we have a session
-
-                        $userdata = array(
-
-                            'user_id' => $user->user_id,
-
-                            'email' => $graphObject->getProperty('email'),
-
-                            'user_level' => 1,
-
-                            'first_name' => $graphObject->getProperty('first_name'),
-
-                            'last_name' => $graphObject->getProperty('last_name'),
-
-                        );
-
-                        $this->session->set_userdata('login', $userdata);
-
-                        redirect( BASE_URL."Dashboard" );
-
-                    } else {
-
-                        $permissions = array(
-
-                            'publish_actions',
-
-                            'email',
-
-                            'user_location',
-
-                            'user_birthday',
-
-                            'user_likes',
-
-                            'public_profile',
-
-                            'user_friends'
-
-                        );
-
-                        $this->session->set_userdata('check_login', true);
-
-                        $loginUrl = $helper->getLoginUrl($permissions);
-
-                        redirect($loginUrl);
-
+                    $response = Users_Model::create_facebook_account(base_url('login/facebook'));
+                    switch ($response['status']) {
+                        case "redirect":
+                        case "redirect_error":
+                        case "success":
+                            redirect($response['url']);
+                            break;
+                        case "error":
+                            $dis['message'] = '<p class="error">'.$response['message'].'</p>';
+                            break;
                     }
-
                     break;
 
                 case "twitter":
