@@ -230,28 +230,25 @@ class Users_Model extends ActiveRecord\Model{
         }
     }
 
-    static function get_facebook_data()
+    static function get_facebook_posts()
     {
         if (self::is_loged_in() && self::is_facebook_account()) {
-            $config = get_config('facebook');
-            $helper = new FacebookRedirectLoginHelper(base_url('login/facebook'), $config['app_id'], $config['app_secret']);
+
             FacebookSession::enableAppSecretProof(false);
-            $session = $helper->getSessionFromRedirect();
-            if (isset($session)) {
-                $request = new FacebookRequest( $session, 'GET', '/me/feed');
-                $response = $request->execute();
-            }
+            $current_user = self::get_current_user();
+            $facebook_user_token = $current_user->get_usermeta('facebook_user_token');
+            $longLivedAccessToken = new AccessToken($facebook_user_token->meta_value);
+            $session = new FacebookSession($longLivedAccessToken);
+
+            $request = new FacebookRequest(
+                $session,
+                'GET',
+                '/me/feed'
+            );
+            $posts = $request->execute()->getGraphObject()->asArray();
+            return $posts;
 
         }
-        // https://www.facebook.com?client_id=[APPID]&client_secret=[APPSECRET]&redirect_uri=[http://APPURL]&scope=manage_pages,read_stream&response_type=token
-        /*
-         * https://graph.facebook.com/oauth/authorize?
-    type=user_agent&
-    client_id=116122545078207&
-    redirect_uri=http%3A%2F%2Fbenbiddington.wordpress.com&
-    scope=user_photos,email,user_birthday,user_online_presence,offline_access
-         * */
-        //https://graph.facebook.com/oauth/access_token?client_id=APP_ID&client_secret=APP_SECRET&grant_type=fb_exchange_token&fb_exchange_token=EXISTING_ACCESS_TOKEN
         return false;
     }
 
@@ -266,9 +263,9 @@ class Users_Model extends ActiveRecord\Model{
         $session = $helper->getSessionFromRedirect();
         $userdata = $_SESSION['check_login'];
         if ( isset( $session ) && $userdata ) {
-
+            // get long term token
             $accessToken = $session->getAccessToken();
-            $longLivedAccessToken = $accessToken->extend($config['app_id'], $config['app_secret']);
+            $facebook_user_token = $accessToken->extend($config['app_id'], $config['app_secret']);
             // graph api request for user data
             $request = new FacebookRequest( $session, 'GET', '/me?fields=first_name,last_name,email');
             $response = $request->execute();
@@ -294,6 +291,17 @@ class Users_Model extends ActiveRecord\Model{
             $UserMeta->user_id = $user->user_id;
             $UserMeta->meta_key = 'social_type';
             $UserMeta->meta_value = 'facebook';
+            $UserMeta->save();
+            /**
+             * Save user long token
+             */
+            $UserMeta = Usermetum::find_by_user_id_and_meta_key_and_meta_value( $user->user_id,'social_type','facebook');
+            if( sizeof($UserMeta)<=0){
+                $UserMeta = new Usermetum();
+            }
+            $UserMeta->user_id = $user->user_id;
+            $UserMeta->meta_key = 'facebook_user_token';
+            $UserMeta->meta_value = $facebook_user_token;
             $UserMeta->save();
             /**
              * Update social meta value

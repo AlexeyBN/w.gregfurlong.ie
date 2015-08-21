@@ -1,15 +1,15 @@
 <div id="ajax-content">
-    <?php if(!Users_Model::is_twitter_account() && !Users_Model::has_twitter_account()): ?>
-    <div class="tw-add-account">
+    <?php if(!Users_Model::is_facebook_account()): ?>
+    <div class="fb-add-account">
         <div id="dashboard-header" class="row dashboard-head">
 
             <div class="dashboard-headline">
 
                 <div class="col-xs-12 col-sm-8 col-md-8">
 
-                    <h3>Add a Twitter Account</h3>
+                    <h3>Add a Facebook Account</h3>
                     <br>
-                    <p>Please add you Twitter account to get feed.</p>
+                    <p>Please add you Facebook account to get information.</p>
 
                 </div>
 
@@ -19,41 +19,42 @@
 
         <div class="row stats_wrap">
             <div class="col-xs-12 col-sm-8 col-md-8">
-                <a href="/Twitter/add_account" class="btn btn-info add-twitter-account">Add an account</a>
+
+                <input type="button" class="btn btn-info add-facebook-account" value="Add an account">
             </div>
         </div>
     </div>
     <?php else: ?>
         <div class="col-xs-12 col-md-12 daily-progress">
             <div class="col-inner section">
-                <h2 class="title">Twitter account information</h2>
+                <h2 class="title">Facebook account information</h2>
                 <p class="description"></p>
 
                 <div class="pull-right timeline">
 
                     <div class="period_time pull-right">
 
-                        <input type="text" class="form-control twitter_datepicker">
-                        <div class="twitter_datepicker_dropdown"></div>
+                        <input type="text" class="form-control facebook_datepicker">
+                        <div class="facebook_datepicker_dropdown"></div>
 
                     </div>
 
                 </div>
 
-                <div class="twitter-chart-info">
-                    <?php echo $this->view('twitter/_twitter_chart', array(
-                        'favorites_chart'   => $favorites_chart,
+                <div class="facebook-chart-info">
+                    <?php echo $this->view('facebook/_facebook_chart', array(
+                        'post_chart'   => $post_chart,
                         'chart_categories'  => $chart_categories,
                         'startDate'         => $startDate,
                         'endDate'           => $endDate,
                     ), TRUE) ?>
                 </div>
-                <div id="twitter_chart" data-columns='[<?php echo json_encode($favorites_chart) ?>, <?php echo json_encode($retweets_chart) ?> ]' data-categories='<?php echo json_encode($chart_categories) ?>'></div>
+                <div id="facebook_chart" data-columns='[<?php echo json_encode($post_chart) ?>]' data-categories='<?php echo json_encode($chart_categories) ?>'></div>
             </div>
         </div>
         <div class="col-xs-12 col-md-6 first-col margin-top-25">
-            <div class="col-inner section">
-                <h2>Tweets</h2>
+            <!--<div class="col-inner section">
+                <h2>Posts</h2>
                 <form id="new-tweet" role="form">
                     <div class="form-group">
                         <label for="tweet_date">Date</label>
@@ -65,13 +66,13 @@
                     </div>
                     <button type="submit" class="btn btn-default">Tweet</button>
                 </form>
-            </div>
+            </div>-->
         </div>
         <div class="col-xs-12 col-md-6 last-col margin-top-25">
-            <div class="col-inner section tweets-table">
-                <?php $this->view('twitter/_tweets_table', array(
+            <div class="col-inner section facebook-post-table">
+                <?php /*$this->view('facebook/_facebook_post_table', array(
                     'tweets' => $current_user->tweets
-                )) ?>
+                ))*/ ?>
             </div>
         </div>
     <?php endif; ?>

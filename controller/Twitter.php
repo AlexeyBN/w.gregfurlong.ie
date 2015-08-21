@@ -52,11 +52,6 @@ class Twitter extends Controller{
 
     public function index(){
         $current_user       = Users_Model::get_current_user();
-
-        /*if ($current_user && $current_user->twitter_oauth_token != NULL && $current_user->twitter_oauth_token_secret != NULL) {
-            $current_user->update_token(base_url('Twitter/index'));
-        }*/
-
         $favorites          = $current_user->get_twitter_favorites();
         $tweets             = $current_user->get_all_tweets();
         $favorites_chart    = array('Favorites');
