@@ -52,6 +52,8 @@ class Facebook extends Controller
         $post_chart         = array('Posts');
         $post_count         = 0;
 
+
+
         $likes              = Users_Model::get_facebook_likes();
         $likes_chart        = array('Likes');
         $likes_count        = 0;
@@ -70,18 +72,22 @@ class Facebook extends Controller
             $likes_chart[$index] = 0;
 
             // Posts
-            foreach ($posts['data'] as $post) {
-                if (date('Y-m-d', strtotime($post->created_time)) == date('Y-m-d', $date_start)) {
-                    $post_chart[$index] ++;
-                    $post_count ++;
+            if (!empty($posts)) {
+                foreach ($posts['data'] as $post) {
+                    if (date('Y-m-d', strtotime($post->created_time)) == date('Y-m-d', $date_start)) {
+                        $post_chart[$index] ++;
+                        $post_count ++;
+                    }
                 }
             }
 
             // Likes
-            foreach ($likes->data as $like) {
-                if (date('Y-m-d', strtotime($like->created_time)) == date('Y-m-d', $date_start)) {
-                    $likes_chart[$index] ++;
-                    $likes_count ++;
+            if (!empty($likes->data)) {
+                foreach ($likes->data as $like) {
+                    if (date('Y-m-d', strtotime($like->created_time)) == date('Y-m-d', $date_start)) {
+                        $likes_chart[$index] ++;
+                        $likes_count ++;
+                    }
                 }
             }
             $date_start = strtotime('+1 day', $date_start);
